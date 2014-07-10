@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-__author__ = '4nto'
+__author__ = 'leinardi'
 
 import logging
 from concurrent import futures
@@ -20,7 +20,7 @@ class Helloworld(object):
     def __init__(self):
         global builder
         builder = Gtk.Builder()
-        builder.add_from_file("gui.glade")
+        builder.add_from_file("helloworld.glade")
         builder.connect_signals(self)    
 
         self.ni = NetworkInterfaces()

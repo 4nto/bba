@@ -16,19 +16,25 @@ logging.basicConfig(level=logging.DEBUG)
 LOG = logging.getLogger(__name__)
 
 
-class Helloworld(object):
+class GUI(object):
     def __init__(self):
         global builder
         builder = Gtk.Builder()
         builder.add_from_file("gui.glade")
         builder.connect_signals(self)    
 
+        # init network interfaces related fields
         self.ni = NetworkInterfaces()
-
         map(builder.get_object("combobox_ifs").append_text, self.ni.get_interfaces())
         builder.get_object("combobox_ifs").set_active(1)
-
         builder.get_object("label2").set_text("Randomize Hostname (now {})".format(gethostname()))
+
+        # init terminal
+        # terminal = Vte.Terminal()
+        # terminal.connect('realize', self.on_realize_terminal)
+        # builder.get_object("scrolledwindow1").add(terminal)
+
+        #self.tb = builder.get_object("textview1").get_buffer()        
 
     def run(self, *args):
         builder.get_object("window").show()
@@ -39,7 +45,9 @@ class Helloworld(object):
 
     def on_switch_pressed(self, switch, gparam):           
         map (lambda c: c.set_sensitive(switch.get_active()), builder.get_object("grid1").get_children())  
-        builder.get_object("combobox_ifs").set_sensitive(switch.get_active())        
+        builder.get_object("combobox_ifs").set_sensitive(switch.get_active()) 
+
+        builder.get_object("textview1").get_buffer().insert(builder.get_object("textview1").get_buffer().get_end_iter(), "ENABLED\n" if switch.get_active() else "DISABLED\n")       
         #MyTask().execute()
 
     def on_combobox_ifs_changed(self, combobox):
@@ -51,4 +59,4 @@ class Helloworld(object):
         
 
 if __name__ == '__main__':
-    Helloworld().run()
+    GUI().run()

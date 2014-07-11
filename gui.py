@@ -10,6 +10,9 @@ import requests
 
 from util import NetworkInterfaces  # util.py
 from socket import gethostname
+import urllib2 
+
+import subprocess, glib
 
 
 logging.basicConfig(level=logging.DEBUG)
@@ -27,14 +30,21 @@ class GUI(object):
         self.ni = NetworkInterfaces()
         map(builder.get_object("combobox_ifs").append_text, self.ni.get_interfaces())
         builder.get_object("combobox_ifs").set_active(1)
-        builder.get_object("label2").set_text("Randomize Hostname (now {})".format(gethostname()))
+        builder.get_object("label2").set_text("Randomize Hostname (now {})".format(gethostname()))  
 
-        # init terminal
-        # terminal = Vte.Terminal()
-        # terminal.connect('realize', self.on_realize_terminal)
-        # builder.get_object("scrolledwindow1").add(terminal)
+#        html = urllib2.urlopen('https://check.torproject.org/?lang=en_US').read()
+#        print html
+#        tor_label = "Using Tor (currently " + ("UP"  if "Congratulations. This browser is configured to use Tor" in html else "DOWN") + ")"
+#        builder.get_object("label4").set_text(tor_label)
 
-        #self.tb = builder.get_object("textview1").get_buffer()        
+    def write_to_buffer(self, fd, condition):
+        if condition == glib.IO_IN:     #if there's something interesting to read
+           char = fd.read(1)            # we read one byte per time, to avoid blocking
+           buf = builder.get_object("textview1").get_buffer()
+           buf.insert_at_cursor(char)   # When running don't touch the TextView!!
+           return True                  # FUNDAMENTAL, otherwise the callback isn't recalled
+        
+        return False # Raised an error: exit and I don't want to see you anymore        
 
     def run(self, *args):
         builder.get_object("window").show()
@@ -47,7 +57,9 @@ class GUI(object):
         map (lambda c: c.set_sensitive(switch.get_active()), builder.get_object("grid1").get_children())  
         builder.get_object("combobox_ifs").set_sensitive(switch.get_active()) 
 
-        builder.get_object("textview1").get_buffer().insert(builder.get_object("textview1").get_buffer().get_end_iter(), "ENABLED\n" if switch.get_active() else "DISABLED\n")       
+        #proc = subprocess.Popen(['/bin/sh', '-c', './test.sh'], stdout = subprocess.PIPE) 
+        proc = subprocess.Popen(['gksudo', 'sh', './anonymous', 'status'], stdout = subprocess.PIPE) 
+        glib.io_add_watch(proc.stdout, glib.IO_IN,  self.write_to_buffer)           
         #MyTask().execute()
 
     def on_combobox_ifs_changed(self, combobox):

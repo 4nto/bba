@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <!-- interface-requires gtk+ 3.4 -->
-  <object class="GtkTextBuffer" id="textbuffer1"/>
   <object class="GtkWindow" id="window">
     <property name="can_focus">False</property>
+    <property name="title" translatable="yes">BB Anonymizer</property>
     <signal name="delete-event" handler="on_window_delete_event" swapped="no"/>
     <child>
       <object class="GtkBox" id="box1">
@@ -127,16 +127,13 @@
               <object class="GtkAlignment" id="alignment1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="left_padding">12</property>
-                <property name="right_padding">12</property>
+                <property name="left_padding">5</property>
+                <property name="right_padding">5</property>
                 <child>
                   <object class="GtkBox" id="box">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="orientation">vertical</property>
-                    <child>
-                      <placeholder/>
-                    </child>
                     <child>
                       <object class="GtkComboBoxText" id="combobox_ifs">
                         <property name="visible">True</property>
@@ -315,18 +312,6 @@
                       </packing>
                     </child>
                     <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
                       <object class="GtkSwitch" id="switch_set">
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
@@ -341,14 +326,15 @@
                       </packing>
                     </child>
                     <child>
-                      <placeholder/>
-                    </child>
-                    <child>
                       <object class="GtkScrolledWindow" id="scrolledwindow1">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="margin_top">1</property>
+                        <property name="margin_bottom">1</property>
+                        <property name="border_width">5</property>
                         <property name="resize_mode">queue</property>
                         <property name="shadow_type">in</property>
+                        <property name="min_content_height">4</property>
                         <child>
                           <object class="GtkTextView" id="textview1">
                             <property name="visible">True</property>
@@ -362,18 +348,6 @@
                         <property name="fill">True</property>
                         <property name="position">9</property>
                       </packing>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <placeholder/>
                     </child>
                   </object>
                 </child>

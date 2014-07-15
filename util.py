@@ -1,18 +1,23 @@
-from netifaces import interfaces, ifaddresses, AF_LINK
+
+import netifaces
 
 class NetworkInterfaces:
 	def __init__(self):
-		pass
+		self.interfaces = netifaces.interfaces()
+		self.ifaddresses = {iface:netifaces.ifaddresses(iface)[netifaces.AF_LINK][0]['addr'] for iface in self.interfaces}
+		self.default_gw = netifaces.gateways()['default'][netifaces.AF_INET][1]
 
 	def get_interfaces(self):
-		return interfaces()
+		return self.interfaces
 
+	def get_default(self):
+		return self.default_gw
+	
 	def get_addr(self, ifname):
-		if ifname not in interfaces():
-			print "Brutta storia"
+		if ifname not in self.interfaces:
 			return None
 
-		return ifaddresses(ifname)[AF_LINK][0]['addr']
+		return self.ifaddresses[ifname]
 
 
 class MyTask():
@@ -22,35 +27,9 @@ class MyTask():
         future = executor.submit(self.my_task)
         future.add_done_callback(self.on_task_complete)
 
-    def my_task(self):  
-        LOG.debug("start my task")
+	def my_task(self):  
+		LOG.debug("start my task")
 
-    def on_task_complete(self, future):
-        LOG.debug("on download task complete")
-'''
-# AUTHOR Gabriele Lanaro
-# https://pygabriel.wordpress.com/2009/07/27/redirecting-the-stdout-on-a-gtk-textview/
-import gtk,glib
-import subprocess
- 
-class CommandTextView(gtk.TextView):
-    # Nice TextView that reads the output of a command syncronously
-    def __init__(self, command):
-        # command : the shell command to spawn
-        super(CommandTextView, self).__init__()
-        self.command = command
-    def run(self):
-        # Runs the process
-        proc = subprocess.Popen(self.command, stdout = subprocess.PIPE) # Spawning
-        glib.io_add_watch(proc.stdout, # file descriptor
-                          glib.IO_IN,  # condition
-                          self.write_to_buffer ) # callback
-    def write_to_buffer(self, fd, condition):
-        if condition == glib.IO_IN: #if there's something interesting to read
-           char = fd.read(1) # we read one byte per time, to avoid blocking
-           buf = self.get_buffer()
-           buf.insert_at_cursor(char) # When running don't touch the TextView!!
-           return True # FUNDAMENTAL, otherwise the callback isn't recalled
-        else:
-           return False # Raised an error: exit and I don't want to see you anymore
-	'''           
+	def on_task_complete(self, future):
+		LOG.debug("on download task complete")
+

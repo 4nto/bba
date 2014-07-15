@@ -26,16 +26,16 @@ class GUI(object):
         builder.add_from_file("gui.glade")
         builder.connect_signals(self)    
 
-        # init network interfaces related fields
-        self.ni = NetworkInterfaces()
-        map(builder.get_object("combobox_ifs").append_text, self.ni.get_interfaces())
-        builder.get_object("combobox_ifs").set_active(1)
-        builder.get_object("label2").set_text("Randomize Hostname (now {})".format(gethostname()))  
+        self.update_netiface_info(builder.get_object("combobox_ifs"))           
+        self.label_append (builder.get_object("lbl_hostname"), "\"{}\"".format(gethostname()))
 
-#        html = urllib2.urlopen('https://check.torproject.org/?lang=en_US').read()
-#        print html
-#        tor_label = "Using Tor (currently " + ("UP"  if "Congratulations. This browser is configured to use Tor" in html else "DOWN") + ")"
-#        builder.get_object("label4").set_text(tor_label)
+    def update_netiface_info(self, combobox):
+        self.ni = NetworkInterfaces()
+        #combobox.removeall()
+        map (combobox.append_text, filter (lambda iface: iface != self.ni.get_default(), self.ni.get_interfaces()))
+        combobox.append_text(self.ni.get_default() + " (default)")
+        combobox.set_active(len(self.ni.get_interfaces()) - 1)
+        LOG.debug(self.ni.get_default())
 
     def write_to_buffer(self, fd, condition):
         if condition == glib.IO_IN:     #if there's something interesting to read
@@ -54,8 +54,7 @@ class GUI(object):
         Gtk.main_quit(*args)
 
     def on_switch_pressed(self, switch, gparam):           
-        map (lambda c: c.set_sensitive(switch.get_active()), builder.get_object("grid1").get_children())  
-        builder.get_object("combobox_ifs").set_sensitive(switch.get_active()) 
+        map (lambda c: c.set_sensitive(switch.get_active()), builder.get_object("grid2").get_children())  
 
         #proc = subprocess.Popen(['/bin/sh', '-c', './test.sh'], stdout = subprocess.PIPE) 
         proc = subprocess.Popen(['gksudo', 'sh', './anonymous', 'status'], stdout = subprocess.PIPE) 
@@ -64,11 +63,26 @@ class GUI(object):
 
     def on_combobox_ifs_changed(self, combobox):
         ifname_active = builder.get_object("combobox_ifs").get_active_text()
-        builder.get_object("label1").set_text("Randomize {} address (now {})".format(ifname_active, self.ni.get_addr(ifname_active)))
+        builder.get_object("lbl_mac").set_text("The current {} MAC address is {}".format(ifname_active, self.ni.get_addr(ifname_active)))
 
     def on_label_click(self, checkbutton, gparam):
-        checkbutton.set_active(False if checkbutton.get_active() else True)
-        
+        checkbutton.set_active(not checkbutton.get_active())
+
+    def toggle_show(self, togglecontent):
+        togglecontent.set_visible(not togglecontent.get_visible())
+
+    def toggle_show_tor(self, togglecontent):
+        if not togglecontent.get_visible():
+            togglecontent.set_text(self.check_tor())   
+
+        self.toggle_show(togglecontent)
+
+    def check_tor(self):
+        html = urllib2.urlopen('https://check.torproject.org/?lang=en_US').read()
+        return "You " + ("are"  if "Congratulations. This browser is" in html else "are not") + " using Tor"        
+
+    def label_append(self, label, text):
+        label.set_text(label.get_text() + text)        
 
 if __name__ == '__main__':
     GUI().run()

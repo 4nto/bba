@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <!-- interface-requires gtk+ 3.4 -->
-  <object class="GtkImage" id="image6">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="icon_name">stock_clear</property>
-  </object>
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -15,6 +10,11 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="pixbuf">icon_anon.svg</property>
+  </object>
+  <object class="GtkImage" id="image6">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="icon_name">stock_clear</property>
   </object>
   <object class="GtkImage" id="image7">
     <property name="visible">True</property>
@@ -174,7 +174,7 @@
                 <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
                 <property name="use_action_appearance">False</property>
-                <signal name="button-release-event" handler="on_switch_pressed" object="image9" swapped="no"/>
+                <signal name="button-release-event" handler="on_switch_pressed" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">2</property>
@@ -285,24 +285,6 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="button_mac">
-                <property name="use_action_appearance">False</property>
-                <property name="visible">True</property>
-                <property name="sensitive">False</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="use_action_appearance">False</property>
-                <property name="image">img_anon</property>
-                <signal name="clicked" handler="toggle_show" object="image8" swapped="no"/>
-              </object>
-              <packing>
-                <property name="left_attach">2</property>
-                <property name="top_attach">0</property>
-                <property name="width">1</property>
-                <property name="height">1</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkButton" id="button_clean">
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
@@ -311,6 +293,7 @@
                 <property name="receives_default">True</property>
                 <property name="use_action_appearance">False</property>
                 <property name="image">image6</property>
+                <signal name="clicked" handler="toggle_show_tor" object="img_tor" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">2</property>
@@ -372,6 +355,24 @@
               </object>
               <packing>
                 <property name="left_attach">0</property>
+                <property name="top_attach">0</property>
+                <property name="width">1</property>
+                <property name="height">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="button_mac">
+                <property name="use_action_appearance">False</property>
+                <property name="visible">True</property>
+                <property name="sensitive">False</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_action_appearance">False</property>
+                <property name="image">img_anon</property>
+                <signal name="clicked" handler="on_button_mac_clicked" swapped="no"/>
+              </object>
+              <packing>
+                <property name="left_attach">2</property>
                 <property name="top_attach">0</property>
                 <property name="width">1</property>
                 <property name="height">1</property>

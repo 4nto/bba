@@ -2,10 +2,10 @@ import urllib2
 from batch import Batch
 
 class Tor(Batch):
-	cmd_start_Tor = "sh ./test.sh"
+	cmd_start = "sh ./test.sh"
 
 	def __init__(self, LOG, output):		
-		Batch.__init__ (self, self.cmd_start_Tor, output)
+		Batch.__init__ (self, self.cmd_start, output)
 		self.log = lambda text: LOG.error(text)
 
 	def check(self):

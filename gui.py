@@ -8,7 +8,7 @@ import json
 from gi.repository import Gtk
 import requests
 
-from util import Hostname# util.py
+from hostname import Hostname
 from networkinterfaces import NetworkInterfaces
 from tor import Tor
 import urllib2 
@@ -36,9 +36,10 @@ class GUI(object):
         self.hname = Hostname(LOG)
         self.ni = NetworkInterfaces(LOG, self.write_to_buffer)
 
-        self.wconsole = lambda text: builder.get_object("textview1").get_buffer().insert_at_cursor(text + '\n')
+        self.wconsole_c = lambda text: builder.get_object("textview1").get_buffer().insert_at_cursor(text)
+        self.wconsole = lambda text: self.wconsole_c (text + '\n')
         self.setImg = lambda image, value: image.set_from_stock(Gtk.STOCK_APPLY if value else Gtk.STOCK_CANCEL, Gtk.IconSize.BUTTON)
-        self.update_netiface_info(builder.get_object("combobox_ifs"))    
+        self.update_netiface_info(builder.get_object("combobox_ifs"))            
         #self.filter_default = lambda text: self.ni.get_default() if "(default)" in text else text       
         
         self.is_root = os.geteuid() == 0
@@ -59,8 +60,7 @@ class GUI(object):
     def write_to_buffer(self, fd, condition):
         if condition == glib.IO_IN:     #if there's something interesting to read
            char = fd.read(1)            # we read one byte per time, to avoid blocking
-           buf = builder.get_object("textview1").get_buffer()
-           buf.insert_at_cursor(char)   # When running don't touch the TextView!!
+           self.wconsole_c(char)
            return True                  # FUNDAMENTAL, otherwise the callback isn't recalled
         
         return False # Raised an error: exit and I don't want to see you anymore        
@@ -87,7 +87,7 @@ class GUI(object):
         self.wconsole("You are " + results[0] + "using Tor!")
 
     def update_hostname_info(self, button):
-        if not self.check_hostname():
+        if not self.hname.check():
             self.wconsole("The current hostname ({}) is already spoofed from the last boot!".format(self.hname.get()))
             button.set_active(True)
 

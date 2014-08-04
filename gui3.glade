@@ -294,7 +294,7 @@
                 <property name="receives_default">True</property>
                 <property name="use_action_appearance">False</property>
                 <property name="image">image6</property>
-                <signal name="clicked" handler="toggle_show_tor" object="img_tor" swapped="no"/>
+                <signal name="clicked" handler="toggle_show_clean" object="img_clean" swapped="no"/>
               </object>
               <packing>
                 <property name="left_attach">2</property>

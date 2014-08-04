@@ -8,10 +8,11 @@ assert version_cmp (pkg_resources.get_distribution("netifaces").version, "0.10.4
 assert command_exist ("/usr/bin/macchanger")
 
 class NetworkInterfaces(Batch):
-	def __init__(self, LOG, output):
-		Batch.__init__ (self, "macchanger -h", output)
-		self.pattern = re.compile(r"([0-9A-F]{2}[:-]){5}([0-9A-F]{2})", re.I)
-		self.log = lambda text: LOG.error(text)
+	def __init__(self, log, output):
+		Batch.__init__ (self)
+		self.set_new_writer (output)
+		self.pattern = re.compile (r"([0-9A-F]{2}[:-]){5}([0-9A-F]{2})", re.I)
+		self.log = log
 		self.update()
 
 	def update(self):
@@ -34,15 +35,14 @@ class NetworkInterfaces(Batch):
 	def is_spoofed(self, ifname):
 		return self.ifspoofed[ifname] if ifname in self.ifspoofed.keys() else None
 
-	def check(self, iface):		
+	def check(self, iface = None):		
+		iface = self.get_default() if iface is None else iface
 		proc = subprocess.Popen(['macchanger', '-s', iface], stdout=subprocess.PIPE)
 		macs = map (lambda line: self.pattern.search(line).group(), proc.stdout)
-		return macs[1:] == macs[:-1]
+		return macs[1:] != macs[:-1]
 
-	def set(self, iface, callback):
-		print "GOING TO SET " + iface + " ADDR: macchanger -a {}".format (iface)
+	def set(self, iface):
 		self.set_cmd ("macchanger -a {}".format (iface))
-		self.set_callback (callback)
 		self.run()
 
 	def reset(self, iface, callback):

@@ -6,8 +6,11 @@ from util import version_cmp, command_exist
 # netifaces version must be greater than 0.10.4
 assert version_cmp (pkg_resources.get_distribution("netifaces").version, "0.10.4") >= 0
 assert command_exist ("/usr/bin/macchanger")
+assert command_exist ("/usr/sbin/anonymous")
 
 class NetworkInterfaces(Batch):
+	cmd_set = 'sh ../backbox-anonymous/usr/sbin/anonymous start -m '
+	cmd_reset = 'sh ../backbox-anonymous/usr/sbin/anonymous stop -m '	
 	def __init__(self, log, output):
 		Batch.__init__ (self)
 		self.set_new_writer (output)
@@ -42,10 +45,9 @@ class NetworkInterfaces(Batch):
 		return macs[1:] != macs[:-1]
 
 	def set(self, iface):
-		self.set_cmd ("macchanger -a {}".format (iface))
+		self.set_cmd (self.cmd_set + iface)
 		self.run()
 
-	def reset(self, iface, callback):
-		self.set_cmd ("macchanger -p {}".format (iface))
-		self.set_callback (callback)
+	def reset(self, iface):
+		self.set_cmd (self.cmd_reset + iface)
 		self.run()

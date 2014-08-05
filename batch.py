@@ -1,7 +1,6 @@
 # Thanks to Alex Martelli from stackoverflow.com/questions/1191374
 
 import subprocess, shlex, glib, os, sys, signal, tempfile
-from threading import Thread
 
 class Batch():
 	def __init__ (self, cmd = None, writer = None, callback = None):		

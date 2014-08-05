@@ -1,14 +1,16 @@
 import re
 from socket import gethostname
-
 from batch import Batch
+from util import command_exist
+
+assert command_exist ("/usr/sbin/anonymous")
 
 class Hostname(Batch):
 	rndname = None
 	cmd_check = 'fgrep "Linux version" /var/log/kern.log'
 	cmd_random = 'shuf -n 1 /etc/dictionaries-common/words'
-	cmd_set = 'sh ../backbox-anonymous/usr/sbin/anonymous start -h '
-	cmd_reset = 'sh ../backbox-anonymous/usr/sbin/anonymous stop -h '
+	cmd_set = '/usr/sbin/anonymous start -h '
+	cmd_reset = '/usr/sbin/anonymous stop -h '
 
 	def __init__(self, log, one_char_writer):
 		Batch.__init__ (self)
@@ -26,7 +28,7 @@ class Hostname(Batch):
 		else:
 			return hostname_original
 
-	def check(self, arg = None):
+	def check(self, hname = None):
 		return gethostname() != self.get_previous_name()	
 
 	def get(self):

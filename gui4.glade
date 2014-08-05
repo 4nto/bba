@@ -6,10 +6,21 @@
     <property name="can_focus">False</property>
     <property name="stock">gtk-save-as</property>
   </object>
-  <object class="GtkImage" id="image2">
+  <object class="GtkImage" id="image3">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="pixbuf">icon_anon.svg</property>
+    <property name="yalign">0.52999997138977051</property>
+    <property name="stock">gtk-dialog-question</property>
+  </object>
+  <object class="GtkImage" id="image4">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-dialog-question</property>
+  </object>
+  <object class="GtkImage" id="image5">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-dialog-question</property>
   </object>
   <object class="GtkImage" id="image7">
     <property name="visible">True</property>
@@ -52,7 +63,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="imagemenuitem3">
+                      <object class="GtkImageMenuItem" id="menu_file_save">
                         <property name="label">Save log as</property>
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
@@ -62,13 +73,14 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="imagemenuitem5">
+                      <object class="GtkImageMenuItem" id="menu_quit">
                         <property name="label">gtk-quit</property>
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <signal name="activate" handler="on_window_delete_event" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -87,13 +99,47 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="imagemenuitem1">
-                        <property name="label">Refresh Netowork Interfaces</property>
+                      <object class="GtkImageMenuItem" id="menu_network">
+                        <property name="label">Refresh Netowork Info</property>
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="image">image7</property>
                         <property name="use_stock">False</property>
+                        <signal name="activate" handler="on_menu_network_activate" object="cmb_mac" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="menu_hostname">
+                        <property name="label">Check Hostname</property>
+                        <property name="use_action_appearance">False</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="image">image3</property>
+                        <property name="use_stock">False</property>
+                        <signal name="activate" handler="on_menu_hostname_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="menu_clean">
+                        <property name="label">Check Cleaning State</property>
+                        <property name="use_action_appearance">False</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="image">image4</property>
+                        <property name="use_stock">False</property>
+                        <signal name="activate" handler="on_menu_clean_activate" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="menu_tor">
+                        <property name="label">Check Tor Connectivity</property>
+                        <property name="use_action_appearance">False</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="image">image5</property>
+                        <property name="use_stock">False</property>
+                        <signal name="activate" handler="on_menu_tor_activate" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -112,7 +158,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="imagemenuitem10">
+                      <object class="GtkImageMenuItem" id="menu_about">
                         <property name="label">gtk-about</property>
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
@@ -159,7 +205,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="xpad">10</property>
-                    <property name="pixbuf">question_icon.png</property>
+                    <property name="stock">gtk-dialog-question</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -178,6 +224,7 @@
                         <property name="can_focus">False</property>
                         <property name="entry_text_column">0</property>
                         <property name="id_column">1</property>
+                        <signal name="changed" handler="on_cmb_mac_changed" swapped="no"/>
                       </object>
                       <packing>
                         <property name="left_attach">2</property>
@@ -269,7 +316,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="xpad">10</property>
-                    <property name="pixbuf">question_icon.png</property>
+                    <property name="stock">gtk-dialog-question</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -285,14 +332,12 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="button_host">
+              <object class="GtkSwitch" id="switch_host">
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="receives_default">True</property>
                 <property name="use_action_appearance">False</property>
-                <property name="image">image2</property>
-                <signal name="clicked" handler="on_button_host_clicked" swapped="no"/>
+                <signal name="button-release-event" handler="on_switch_host_button_release_event" swapped="no"/>
               </object>
               <packing>
                 <property name="resize">True</property>
@@ -336,7 +381,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="xpad">10</property>
-                    <property name="pixbuf">question_icon.png</property>
+                    <property name="stock">gtk-dialog-question</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -359,6 +404,7 @@
                 <property name="receives_default">True</property>
                 <property name="use_action_appearance">False</property>
                 <property name="image">img_clear</property>
+                <signal name="clicked" handler="on_button_clean_clicked" swapped="no"/>
               </object>
               <packing>
                 <property name="resize">True</property>
@@ -402,7 +448,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="xpad">10</property>
-                    <property name="pixbuf">question_icon.png</property>
+                    <property name="stock">gtk-dialog-question</property>
                   </object>
                   <packing>
                     <property name="left_attach">0</property>
@@ -418,11 +464,12 @@
               </packing>
             </child>
             <child>
-              <object class="GtkSwitch" id="switch_set">
+              <object class="GtkSwitch" id="switch_tor">
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="use_action_appearance">False</property>
+                <signal name="button-release-event" handler="on_switch_tor_button_release_event" swapped="no"/>
               </object>
               <packing>
                 <property name="resize">True</property>

@@ -1,10 +1,10 @@
 # Thanks to Alex Martelli from stackoverflow.com/questions/1191374
 
-import subprocess, shlex, glib, os, sys, signal, tempfile
+from gi.repository import GObject
+import subprocess, shlex, os, sys, signal, tempfile
 
-class Batch():
-	def __init__ (self, cmd = None, writer = None, callback = None):		
-		#self.log = lambda text: LOG.error(text)						
+class Batch(object):
+	def __init__ (self, cmd = None, writer = None, callback = None):								
 		self.cmd = cmd
 		self.writer = writer
 		self.callback = callback
@@ -28,23 +28,34 @@ class Batch():
 		except OSError:
 			print "System-related error: '{}' does not seem to be a functional thing".format(self.cmd)
 		else:
-			glib.io_add_watch (proc.stdout, glib.IO_IN, self.writer)	
-			glib.child_watch_add (proc.pid, self.callback)
+			GObject.io_add_watch (proc.stdout, GObject.IO_IN, self.writer)	
+			GObject.child_watch_add (proc.pid, self.callback)
 
 	def run_and_parse(self):
 		tmp, pathname = tempfile.mkstemp()
-		def callback_parser (fd, condition):
+		def callback_parser (*args):
 			with open(pathname) as f:
 				self.callback(f)
 			os.remove(pathname)
 
-		try:			
+		try:
 			proc = subprocess.Popen (self.cmd, stdout = tmp)
 		except OSError:
 			print "System-related error: '{}' does not seem to be a functional thing".format(self.cmd)
 			os.remove(pathname)
-		else:	
-			glib.child_watch_add (proc.pid, callback_parser)	
+		else:                        
+                        GObject.child_watch_add (proc.pid, callback_parser)
+
+	def run_and_parse_new(self):
+                #try:
+                pid, _, fd, _ = GObject.spawn_async (self.cmd, flags = GObject.SPAWN_SEARCH_PATH|GObject.SPAWN_DO_NOT_REAP_CHILD, standard_output=True)
+                #except GObject.GError:    print "FUCKING CRIMINALS!"
+                		
+		def callback_parser (*args):
+                        with os.fdopen(fd) as fo:
+                                self.callback(fo)
+                      
+                GObject.child_watch_add (pid, callback_parser)		
 
 	def run_and_wait(self, timeout = 10):
 		try:
@@ -63,7 +74,7 @@ class Batch():
 
 	def set_new_writer(self, one_char_writer):
 		def wrapped_writer(fd, condition, one_char_writer):
-			if condition == glib.IO_IN:     	# if there's something interesting to read
+			if condition == GObject.IO_IN:     	# if there's something interesting to read
 				one_char_writer (fd.read(1))    # we read one byte per time, to avoid blocking
 				return True                 	# FUNDAMENTAL, otherwise the callback isn't recalled
 

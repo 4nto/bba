@@ -1,8 +1,5 @@
 import os, re
 
-class Clean:
-	pass
-
 def command_exist(fpath):
 	return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
 

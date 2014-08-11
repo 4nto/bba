@@ -13,7 +13,7 @@ class NetworkInterfaces(Batch):
 	cmd_reset = 'sh ../backbox-anonymous/usr/sbin/anonymous stop -m '	
 	def __init__(self, log, output):
 		Batch.__init__ (self)
-		self.set_new_writer (output)
+		self.set_writer (output)
 		self.pattern = re.compile (r"([0-9A-F]{2}[:-]){5}([0-9A-F]{2})", re.I)
 		self.log = log
 		self.update()

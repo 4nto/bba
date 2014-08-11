@@ -12,18 +12,18 @@ from bleachbit import Bleachbit
 
 class BBA(GUI):
     def __init__ (self, glade_file, log_file):
-    	GUI.__init__ (self, glade_file, log_file)
+        GUI.__init__ (self, glade_file, log_file)
 
-    	self.wconsole = lambda text: self.get_object("textview1").get_buffer().insert_at_cursor(text + '\n')
+        self.wconsole = lambda text: self.get_object("textview1").get_buffer().insert_at_cursor(text + '\n')
         self.toggleImg = lambda value: Gtk.STOCK_APPLY if value else Gtk.STOCK_CANCEL
         self.setImg = lambda img, val: self.get_object(img).set_from_stock(self.toggleImg(val), Gtk.IconSize.BUTTON)    
 
-    	self.ni = NetworkInterfaces(self.warning, self.get_object("textview1").get_buffer().insert_at_cursor)
+        self.ni = NetworkInterfaces(self.warning, self.get_object("textview1").get_buffer().insert_at_cursor)
         self.hname = Hostname(self.warning, self.get_object("textview1").get_buffer().insert_at_cursor)
         self.bleach = Bleachbit(self.warning, self.get_object("textview1").get_buffer().insert_at_cursor)
         self.tor = Tor(self.warning, self.get_object("textview1").get_buffer().insert_at_cursor)
 
-    	self.on_menu_network_activate(self.get_object("cmb_mac"))
+        self.on_menu_network_activate(self.get_object("cmb_mac"))
         self.on_menu_hostname_activate()
         self.on_menu_clean_activate()
         self.on_menu_tor_activate()
@@ -32,7 +32,7 @@ class BBA(GUI):
         def background_check_callback(is_already):
             self.setImg (image, is_already)
             if hasattr(self.get_object(button), "set_active"):
-            	self.get_object(button).set_active(is_already)
+                self.get_object(button).set_active(is_already)
             self.get_object(button).set_sensitive(True)
             self.wconsole (message[1 if is_already else 0])
 
@@ -40,10 +40,11 @@ class BBA(GUI):
         check(background_check_callback)
 
     def on_menu_hostname_activate (self, *args):
-    	result = self.hname.check()
-        self.setImg ("img_host", result)
-        self.get_object("switch_host").set_active(result)
-        self.get_object("switch_host").set_sensitive(True)
+        #result = self.hname.check()
+        #self.setImg ("img_host", result)
+        #self.get_object("switch_host").set_active(result)
+        #self.get_object("switch_host").set_sensitive(True)
+        self.background_check(self.hname.check, "img_host", "switch_host", ["I know your name", "Fucking liar"])
 
     def on_menu_clean_activate (self, *args):
         self.background_check(self.bleach.check, "img_clean", "button_clean", ["Sad data in your pc..", "Cleaned bastard"])
@@ -75,23 +76,25 @@ class BBA(GUI):
         text = self.get_object("cmb_mac").get_active_text()
         return self.ni.get_default() if text is None or '(default)' in text else text 
 
-    def on_switch_host_button_release_event (self, switch, *args):
-        switch.set_sensitive(False) 
-        self.hname.set_callback (self.on_menu_hostname_activate)
-        if switch.get_active():	self.hname.reset()               
-        else:					self.hname.set (self.hname.random())
-
+    def on_switch_host_button_press_event (self, switch, *args):
+        switch.set_sensitive(False)         
+        if switch.get_active():
+            self.hname.reset (self.on_menu_hostname_activate)
+        else:
+            self.hname.randomize (self.on_menu_hostname_activate)
 
     def on_button_clean_clicked (self, button):
-    	button.set_sensitive(False)
-    	self.bleach.set_callback (self.on_menu_clean_activate)
-    	self.bleach.start()
+        button.set_sensitive(False)
+        self.bleach.set_callback (self.on_menu_clean_activate)
+        self.bleach.start()
 
-    def on_switch_tor_button_release_event (self, switch, *args):
-    	switch.set_sensitive(False)
-    	self.tor.set_callback (self.on_menu_tor_activate)
-    	if switch.get_active():	self.tor.stop()    		
-    	else:					self.tor.start()
+    def on_switch_tor_button_press_event (self, switch, *args):               
+        switch.set_sensitive(False)
+        self.tor.set_callback (self.on_menu_tor_activate)
+        if switch.get_active():
+            self.tor.stop()         
+        else:
+            self.tor.start()
 
 
 if __name__ == '__main__':

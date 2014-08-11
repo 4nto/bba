@@ -6,48 +6,64 @@ from util import command_exist
 assert command_exist ("/usr/sbin/anonymous")
 
 class Hostname(Batch):
-	rndname = None
-	cmd_check = 'fgrep "Linux version" /var/log/kern.log'
-	cmd_random = 'shuf -n 1 /etc/dictionaries-common/words'
-	cmd_set = '/usr/sbin/anonymous start -h '
-	cmd_reset = '/usr/sbin/anonymous stop -h '
+    startup_file = '/var/log/kern.log.1'   
+    cmd_check = 'fgrep "Linux version" ' + startup_file
+    cmd_random = 'shuf -n 1 /etc/dictionaries-common/words'
+    cmd_set = '/usr/sbin/anonymous start -h '
+    cmd_reset = '/usr/sbin/anonymous stop -h '
 
-	def __init__(self, log, one_char_writer):
-		Batch.__init__ (self)
-		self.set_new_writer (one_char_writer)
-		self.log = log
+    def __init__(self, log, one_char_writer):
+        Batch.__init__ (self)
+        self.set_writer (one_char_writer)
+        self.log = log
+        self.pattern = re.compile (r"[a-z]*", re.I)
 
-	def get_previous_name(self):
-		self.set_cmd (self.cmd_check, False)
-		result = self.run_and_wait()[0].strip()
-		try:
-			hostname_original = result.split('\n')[-1].split()[3]
-		except:
-			self.log("Unable to open kern.log or parsing it")
-			return ""
-		else:
-			return hostname_original
+    ''' Get the system startup hostname '''
+    def __startup_name (self, callback):
+        def parser (fd):
+            try:
+                init_hostname = fd.readlines()[-1].split()[3]
+            except:
+                self.log ("Parsing error")
+                callback (False)
+            else:
+                callback (init_hostname)
 
-	def check(self, hname = None):
-		return gethostname() != self.get_previous_name()	
+        self.set_cmd (self.cmd_check, should_be_root = False)
+        self.set_callback (parser)
+        self.run_and_parse()        
 
-	def get(self):
-		return gethostname()
+    def check (self, callback):
+        def check_callback (init_hostname):
+            callback (init_hostname != gethostname())
 
-	def reset(self):
-		hostname_original = self.get_previous_name()
-		if hostname_original != "":
-			self.set (hostname_original)
-		else:
-			#map (one_char_writer, "Unable to find a previous hostname\n")
-			self.log ("Unable to find a previous hostname")
+        self.__startup_name (check_callback)
 
-	def set(self, hname):
-		self.set_cmd (self.cmd_set + hname)
-		self.run()
+    def reset (self, callback):
+        def reset_callback (init_hostname):
+            self.set_callback (callback)
+            self.set (init_hostname)
+            
+        self.__startup_name (reset_callback)
 
-	def random(self):
-		self.set_cmd (self.cmd_random, False)
-		result = self.run_and_wait()[0].strip().lower()
-		return re.match('[a-z]*', result).group()
-		
+    def set (self, hname):
+        self.set_cmd (self.cmd_set + hname)
+        self.run()
+
+    def randomize (self, callback):
+        def random_callback (random_raw_name):
+            random_name = self.pattern.search(random_raw_name.readline()).group()
+
+            if random_name.strip() == "":
+                self.randomize (callback)
+            else:    
+                self.set_callback (callback)
+                self.set (random_name.strip())
+
+        self.set_callback (random_callback) 
+        self.set_cmd (self.cmd_random, False)
+        self.run_and_parse()
+        
+    def get(self):
+        return gethostname()
+    

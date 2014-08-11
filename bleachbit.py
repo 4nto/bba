@@ -11,8 +11,9 @@ class Bleachbit(Batch):
 	cmd_check = "/usr/bin/bleachbit -p -c " + cleaners
 
 	def __init__(self, log, output):		
-		Batch.__init__ (self, self.cmd_start)
-		self.set_new_writer (output)
+		Batch.__init__ (self)
+		self.set_cmd (self.cmd_start)
+		self.set_writer (output)
 		self.log = log
 
 	def check(self, callback, seconds = 10):

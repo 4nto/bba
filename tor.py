@@ -4,8 +4,8 @@ from util import command_exist
 assert command_exist ("/usr/sbin/anonymous")
 
 class Tor(Batch):
-    cmd_start   = '/sbin/anonymous start -t'
-    cmd_stop    = '/sbin/anonymous stop -t'
+    cmd_start   = '/usr/sbin/anonymous start -t'
+    cmd_stop    = '/usr/sbin/anonymous stop -t'
     cmd_check   = 'curl -s https://check.torproject.org/?lang=en_US'        
     
     def __init__(self, log, output):        
@@ -22,10 +22,12 @@ class Tor(Batch):
         self.set_callback (parser)
         self.run_and_parse()
 
-    def start(self):
+    def start(self, callback):
+        self.set_callback (callback)
         self.set_cmd (self.cmd_start)
         self.run()
 
-    def stop(self):
+    def stop(self, callback):
+        self.set_callback (callback)
         self.set_cmd (self.cmd_stop)
         self.run()

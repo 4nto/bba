@@ -5,8 +5,9 @@ class GUI(Gtk.Builder, logging.Logger):
     def __init__(self, glade_file, log_file):
         Gtk.Builder.__init__(self)
         self.add_from_file(glade_file)
-        self.connect_signals(self)	
-
+        self.connect_signals(self)
+        
+        # Thanks to jdi from stackoverflow.com/questions/11191398
         logging.Logger.__init__(self, __name__)
         fh = logging.FileHandler(log_file)
         fh.setLevel(logging.DEBUG)				
@@ -17,7 +18,6 @@ class GUI(Gtk.Builder, logging.Logger):
         ch.setFormatter(formatter)
         self.addHandler(fh)
         self.addHandler(ch)
-        #Thread (target = bleach_check, args = ["img_clean", "button_clean"]).start()
 
     def __call__(self):
         self.get_object("window").show()

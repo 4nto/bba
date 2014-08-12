@@ -3,10 +3,7 @@ import os, re
 def command_exist(fpath):
 	return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
 
-'''
-haridsv from stackoverflow
-http://stackoverflow.com/questions/1714027/version-number-comparison
-'''
+# Thanks to haridsv from stackoverflow.com/questions/1714027
 def version_cmp(version1, version2):
     def normalize(v):
         return map (int, re.sub (r'(\.0+)*$','', v).split("."))

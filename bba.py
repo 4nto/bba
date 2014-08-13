@@ -16,6 +16,7 @@ class BBA(GUI):
         self.toggleImg = lambda value: Gtk.STOCK_APPLY if value else Gtk.STOCK_CANCEL
         self.setImg = lambda img, val: self.get_object(img).set_from_stock(self.toggleImg(val), Gtk.IconSize.BUTTON)
         self.write_in_textview = lambda text: self.get_object("textview1").get_buffer().insert_at_cursor(text)
+        self.sensitive = lambda group, value: map (lambda item: self.get_object(item).set_sensitive(value), group)
             
         self.ni =       NetworkInterfaces   (self.warning, self.write_in_textview)
         self.hname =    Hostname            (self.warning, self.write_in_textview)
@@ -26,6 +27,7 @@ class BBA(GUI):
         self.on_menu_hostname_activate()
         self.on_menu_clean_activate()
         self.on_menu_tor_activate()
+        #self.sensitive (['switch_host', 'button_mac', 'button_clean', 'switch_tor'], False)
 
     def background_check (self, check, image, button, message):
         def background_check_callback(is_already):
@@ -33,22 +35,24 @@ class BBA(GUI):
             if hasattr(self.get_object(button), "set_active"):
                 self.get_object(button).set_active(is_already)
             self.get_object(button).set_sensitive(True)
+            self.sensitive ([button], True)
             self.write_in_textview (message[1 if is_already else 0] + '\n')
 
-        self.get_object(button).set_sensitive(False)
+        self.sensitive ([button], False)
         check(background_check_callback)
 
     def on_menu_hostname_activate (self, *args):
         self.background_check(self.hname.check, "img_host", "switch_host", ["I know your name", "Fucking liar"])
 
     def on_menu_clean_activate (self, *args):
-        self.background_check(self.bleach.check, "img_clean", "button_clean", ["Sad data in your pc..", "Cleaned bastard"])
+        self.background_check(self.bleach.check, "img_clean", "button_clean", ["Sad data in your pc..", "Cleaned shit"])
 
     def on_menu_tor_activate (self, *args):
-        self.background_check(self.tor.check, "img_tor", "switch_tor", ["You're visible, idiot..", "Anonymous bastard"])
+        self.background_check(self.tor.check, "img_tor", "switch_tor", ["You're visible", "Anonymous bastard"])
 
-    def on_cmb_mac_changed (self, combobox):
-        self.setImg ("img_mac", self.ni.check(self.selected_interface()))
+    def on_cmb_mac_changed (self, *args):
+        self.ni.select (self.selected_interface())
+        self.background_check(self.ni.check, "img_mac", "button_mac", ["You real address?", "Spoofed imp"])
 
     def on_menu_network_activate (self, combobox):
         self.ni.update()
@@ -56,19 +60,15 @@ class BBA(GUI):
         combobox.append_text(self.ni.get_default() + " (default)")
         map (combobox.append_text, filter (lambda iface: iface != self.ni.get_default(), self.ni.get_interfaces()))        
         combobox.set_active(0) 
-        self.on_cmb_mac_changed (combobox)
+        self.on_cmb_mac_changed()
 
     def selected_interface(self):
         text = self.get_object("cmb_mac").get_active_text()
         return self.ni.get_default() if text is None or '(default)' in text else text
 
     def on_button_mac_clicked (self, button):
-        def on_button_mac_clicked_callback (*args):            
-            self.setImg ('img_mac', self.ni.check(self.selected_interface()))
-            button.set_sensitive(True)
-
         button.set_sensitive(False)
-        self.ni.set (self.selected_interface(), on_button_mac_clicked_callback)         
+        self.ni.set (self.selected_interface(), self.on_cmb_mac_changed)         
 
     def on_switch_host_button_press_event (self, switch, *args):
         switch.set_sensitive(False)         

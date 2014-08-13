@@ -1,12 +1,9 @@
-# Thanks to Alex Martelli from stackoverflow.com/questions/1191374
-
 from gi.repository import GObject
 import shlex, os, tempfile
 
 class Batch(object):        
     def __init__ (self):
         self.envp = ['='.join(kv) for kv in os.environ.iteritems()]
-        self.flags_spawn = GObject.SPAWN_DO_NOT_REAP_CHILD|GObject.SPAWN_SEARCH_PATH
 
     def set_callback(self, callback):
         assert hasattr (callback, '__call__')
@@ -41,7 +38,7 @@ class Batch(object):
     def __run_spawn_async (self):
         return GObject.spawn_async (argv = self.cmd,
                                     envp = self.envp,
-                                    flags = self.flags_spawn,
+                                    flags = GObject.SPAWN_DO_NOT_REAP_CHILD|GObject.SPAWN_SEARCH_PATH,
                                     standard_output = True,
                                     standard_error = True)
 
@@ -52,10 +49,10 @@ class Batch(object):
                 print "ERROR RUNNING COMMAND {}:".format(self.cmd[0])
                 print err.strip()
                     
-    def set_writer(self, one_char_writer):
+    def set_writer (self, one_char_writer):
         assert hasattr (one_char_writer, '__call__')
         
-        def wrapped_writer(fd, condition):
+        def wrapped_writer (fd, condition):
             if condition == GObject.IO_IN:     	# if there's something interesting to read
                 one_char_writer (os.read(fd, 1))     
                 return True                 	# FUNDAMENTAL, otherwise the callback isn't recalled

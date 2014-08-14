@@ -10,14 +10,15 @@ class Bleachbit(Batch):
 	cmd_start_overwrite = "/usr/bin/bleachbit -o -c " + cleaners
 	cmd_check = "/usr/bin/bleachbit -p -c '{}'".format(cleaners)
 
-	def __init__(self, log, output):		
-		Batch.__init__ (self)		
+	def __init__(self, log, output):
+                self.log = log.getChild(__name__)
+		Batch.__init__ (self, self.log)		
 		self.set_writer (output)
-		self.log = log
 		self.set_no_overwrite()
 
 	def check(self, callback, seconds = 10):
 		def parser (fd):
+                        self.log.error ("test parsing!")
 			checkline = lambda line: 'Files to be deleted: 0' in line or 'File eliminati: 0' in line
 			callback (filter (checkline , fd.readlines()) != []) # it works only in english !!!	
 

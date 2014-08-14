@@ -2,7 +2,8 @@ from gi.repository import GObject
 import shlex, os, tempfile
 
 class Batch(object):        
-    def __init__ (self):
+    def __init__ (self, log):
+        self.log = log.getChild(__name__)
         self.envp = ['='.join(kv) for kv in os.environ.iteritems()]
 
     def set_callback(self, callback):
@@ -46,8 +47,8 @@ class Batch(object):
         with os.fdopen(stderr) as fd:
             err = fd.read()
             if err.strip() != "":
-                print "ERROR RUNNING COMMAND {}:".format(self.cmd[0])
-                print err.strip()
+                self.log.error ("running command '{}'".format(self.cmd[0]))
+                self.log.error (err.strip())
                     
     def set_writer (self, one_char_writer):
         assert hasattr (one_char_writer, '__call__')

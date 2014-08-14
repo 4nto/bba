@@ -15,10 +15,10 @@ class NetworkInterfaces(Batch):
     selected = None
     
     def __init__(self, log, output):
-        Batch.__init__ (self)
+        self.log = log.getChild(__name__)
+        Batch.__init__ (self, self.log)
         self.set_writer (output)
         self.pattern = re.compile (r"([0-9A-F]{2}[:-]){5}([0-9A-F]{2})", re.I)
-        self.log = log
         self.update()
 
     def update(self):
@@ -29,7 +29,7 @@ class NetworkInterfaces(Batch):
             self.default_gw = NI.gateways()['default'][NI.AF_INET][1]
         else:
             self.default_gw = self.interfaces[-1]
-            self.log ("Unable to find default gateway, using {} instead".format(self.default_gw))  
+            self.log.warning ("Unable to find default gateway, using {} instead".format(self.default_gw))  
 
     def get_interfaces (self):
         return self.interfaces
@@ -45,10 +45,11 @@ class NetworkInterfaces(Batch):
 
     def check (self, callback):
         def parser (fd):
+            self.log.error ("test parsing!")
             try:
                 macs = map (lambda line: self.pattern.search(line).group(), fd.readlines())
             except:
-                self.log ("Parsing error")
+                self.log.error ("Parsing error")
                 callback (False)                
             else:
                 callback (macs[1:] != macs[:-1])

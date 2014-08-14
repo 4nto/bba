@@ -18,10 +18,10 @@ class BBA(GUI):
         self.write_in_textview = lambda text: self.get_object("textview1").get_buffer().insert_at_cursor(text)
         self.sensitive = lambda group, value: map (lambda item: self.get_object(item).set_sensitive(value), group)
             
-        self.ni =       NetworkInterfaces   (self.warning, self.write_in_textview)
-        self.hname =    Hostname            (self.warning, self.write_in_textview)
-        self.bleach =   Bleachbit           (self.warning, self.write_in_textview)
-        self.tor =      Tor                 (self.warning, self.write_in_textview)
+        self.ni =       NetworkInterfaces (self.log, self.write_in_textview)
+        self.hname =    Hostname (self.log, self.write_in_textview)
+        self.bleach =   Bleachbit (self.log, self.write_in_textview)
+        self.tor =      Tor (self.log, self.write_in_textview)
 
         self.on_menu_network_activate(self.get_object("cmb_mac"))
         self.on_menu_hostname_activate()

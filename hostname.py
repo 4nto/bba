@@ -13,9 +13,9 @@ class Hostname(Batch):
     cmd_reset = '/usr/sbin/anonymous stop -h '
 
     def __init__(self, log, one_char_writer):
-        Batch.__init__ (self)
-        self.set_writer (one_char_writer)
-        self.log = log
+        self.log = log.getChild(__name__)
+        Batch.__init__ (self, self.log)
+        self.set_writer (one_char_writer)        
         self.pattern = re.compile (r"[a-z]*", re.I)
 
     ''' Get the system startup hostname '''
@@ -24,7 +24,7 @@ class Hostname(Batch):
             try:
                 init_hostname = fd.readlines()[-1].split()[3]
             except:
-                self.log ("Parsing error")
+                self.log.error ("Parsing error")
                 callback (False)
             else:
                 callback (init_hostname)
@@ -35,6 +35,7 @@ class Hostname(Batch):
 
     def check (self, callback):
         def check_callback (init_hostname):
+            self.log.error ("test parsing!")
             callback (init_hostname != gethostname())
 
         self.__startup_name (check_callback)

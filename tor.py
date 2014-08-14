@@ -8,14 +8,15 @@ class Tor(Batch):
     cmd_stop    = '/usr/sbin/anonymous stop -t'
     cmd_check   = 'curl -s https://check.torproject.org/?lang=en_US'        
     
-    def __init__(self, log, output):        
-        Batch.__init__ (self)
+    def __init__(self, log, output):
+        self.log = log.getChild(__name__)
+        Batch.__init__ (self, self.log)
         self.set_writer (output)
-        self.log = log
         self.checkline = lambda line: 'Congratulations. This browser is' in line
         
     def check (self, callback, sec = 1):
-        def parser (fd):            
+        def parser (fd):
+            self.log.error ("test parsing!")
             callback (filter (self.checkline, fd.readlines()) != [])
 
         self.set_cmd (self.cmd_check, should_be_root = False)

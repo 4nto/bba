@@ -1,10 +1,12 @@
-bba
-===
-
 BackBox Anonymizer
+==============
+
+A simple GTK+3 tool for BackBox Linux 
 
 Dependecies
-* netifaces 0.10.4  https://pypi.python.org/pypi/netiface
-* macchanger        https://github.com/alobbs/macchanger
-* anonymous         https://github.com/4nto/backbox-anonymous         
-* bleachbit         sudo apt-get install bleachbit
+- netifaces 0.10.4  https://pypi.python.org/pypi/netiface
+- anonymous         https://github.com/4nto/backbox-anonymous
+- bleachbit and macchanger
+'''
+sudo apt-get install bleachbit macchanger
+'''

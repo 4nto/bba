@@ -1,10 +1,8 @@
 import re, subprocess, pkg_resources
 import netifaces as NI
 from batch import Batch
-from util import version_cmp, command_exist
+from util import command_exist, version_cmp, get_default_gateway_linux
 
-# netifaces version must be greater than 0.10.4
-assert version_cmp (pkg_resources.get_distribution("netifaces").version, "0.10.4") >= 0
 assert command_exist ("/usr/bin/macchanger")
 assert command_exist ("/usr/sbin/anonymous")
 
@@ -22,15 +20,21 @@ class NetworkInterfaces(Batch):
         self.update()
 
     def update(self):
-        self.interfaces = NI.interfaces()
+        self.interfaces = filter (lambda i: i != "lo", NI.interfaces()) # don't consider lo interface
         self.ifaddresses = {i:NI.ifaddresses(i)[NI.AF_LINK][0]['addr'] for i in self.interfaces}
-        
-        if NI.gateways()['default'].has_key(NI.AF_INET):
-            self.default_gw = NI.gateways()['default'][NI.AF_INET][1]
-        else:
-            self.default_gw = self.interfaces[-1]
-            self.log.warning ("Unable to find default gateway, using {} instead".format(self.default_gw))  
 
+        # netifaces version must be greater than 0.10.4
+        if version_cmp (pkg_resources.get_distribution("netifaces").version, "0.10.4") >= 0:
+            if NI.gateways()['default'].has_key(NI.AF_INET):
+                self.default_gw = NI.gateways()['default'][NI.AF_INET][1]
+            else:
+                self.default_gw = None # self.interfaces[-1]
+        else:
+            self.default_gw = get_default_gateway_linux()
+
+        if self.default_gw is None:
+            self.log.warning ("Unable to find default gateway..".format(self.default_gw))
+            
     def get_interfaces (self):
         return self.interfaces
         
@@ -45,7 +49,6 @@ class NetworkInterfaces(Batch):
 
     def check (self, callback):
         def parser (fd):
-            self.log.error ("test parsing!")
             try:
                 macs = map (lambda line: self.pattern.search(line).group(), fd.readlines())
             except:

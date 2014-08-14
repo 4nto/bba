@@ -6,7 +6,7 @@ from util import command_exist
 assert command_exist ("/usr/sbin/anonymous")
 
 class Hostname(Batch):
-    startup_file = '/var/log/kern.log.1'   
+    startup_file = '/var/log/dmesg'   
     cmd_check = 'fgrep "Linux version" ' + startup_file
     cmd_random = 'shuf -n 1 /etc/dictionaries-common/words'
     cmd_set = '/usr/sbin/anonymous start -h '
@@ -35,7 +35,6 @@ class Hostname(Batch):
 
     def check (self, callback):
         def check_callback (init_hostname):
-            self.log.error ("test parsing!")
             callback (init_hostname != gethostname())
 
         self.__startup_name (check_callback)

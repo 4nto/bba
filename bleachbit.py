@@ -18,7 +18,6 @@ class Bleachbit(Batch):
 
 	def check(self, callback, seconds = 10):
 		def parser (fd):
-                        self.log.error ("test parsing!")
 			checkline = lambda line: 'Files to be deleted: 0' in line or 'File eliminati: 0' in line
 			callback (filter (checkline , fd.readlines()) != []) # it works only in english !!!	
 

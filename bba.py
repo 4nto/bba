@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 __author__ = 'Antonio De Rosa'
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GObject
 
 from gui import GUI
 from hostname import Hostname
@@ -51,20 +51,23 @@ class BBA(GUI):
         self.background_check(self.tor.check, "img_tor", "switch_tor", ["You're visible", "Anonymous bastard"])
 
     def on_cmb_mac_changed (self, *args):
-        self.ni.select (self.selected_interface())
+        selected_interface = self.selected_interface()
+        if selected_interface is not None:
+            self.ni.select (selected_interface)        
         self.background_check(self.ni.check, "img_mac", "button_mac", ["You real address?", "Spoofed imp"])
 
     def on_menu_network_activate (self, combobox):
         self.ni.update()
         combobox.remove_all()
-        combobox.append_text(self.ni.get_default() + " (default)")
+        if self.ni.get_default() is not None:
+            combobox.append_text(self.ni.get_default() + " (default)")
         map (combobox.append_text, filter (lambda iface: iface != self.ni.get_default(), self.ni.get_interfaces()))        
-        combobox.set_active(0) 
+        combobox.set_active(0)
         self.on_cmb_mac_changed()
 
     def selected_interface(self):
-        text = self.get_object("cmb_mac").get_active_text()
-        return self.ni.get_default() if text is None or '(default)' in text else text
+        text = self.get_object("cmb_mac").get_active_text()            
+        return text if text is None or '(default)' not in text else text[:-10]
 
     def on_button_mac_clicked (self, button):
         button.set_sensitive(False)
@@ -88,6 +91,10 @@ class BBA(GUI):
         else:
             self.tor.start(self.on_menu_tor_activate)
 
+    #autoscroll
+    def on_textview_sizeallocate_event (self, textview, *args):
+        adj = textview.get_vadjustment()
+        adj.set_value(adj.get_upper() - adj.get_page_size())        
 
 if __name__ == '__main__':
     bba = BBA("gui4.glade", "bba.log")

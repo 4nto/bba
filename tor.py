@@ -16,7 +16,6 @@ class Tor(Batch):
         
     def check (self, callback, sec = 1):
         def parser (fd):
-            self.log.error ("test parsing!")
             callback (filter (self.checkline, fd.readlines()) != [])
 
         self.set_cmd (self.cmd_check, should_be_root = False)

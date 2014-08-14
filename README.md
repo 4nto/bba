@@ -9,8 +9,8 @@ Dependecies
 
 * [backbox anonymous](https://github.com/4nto/backbox-anonymous)
 ```
-wget -c https://raw.githubusercontent.com/4nto/backbox-anonymous/master/usr/sbin/
-chmod +x
+wget -c https://raw.githubusercontent.com/4nto/backbox-anonymous/master/usr/sbin/anonymous
+chmod +x anonymous
 mv anonymous /usr/sbin/anonymous
 ```
 * [bleachbit](http://bleachbit.sourceforge.net/)

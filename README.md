@@ -1,7 +1,7 @@
-#BackBox Anonymizer
+BackBox Anonymizer
 ==============
 
-A simple GTK+3 tool for BackBox Linux 
+A simple GTK3 tool for BackBox Linux 
 
 Dependecies
 --------------

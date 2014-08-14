@@ -1,1 +1,1 @@
-<li> <a href="http://github.com/4nto/<project>/commit/fd6176889a854c3bbc3286eea52eeb7f0dac8e14">view commit &bull;</a> Beta 4</li> 
+<li> <a href="http://github.com/4nto/bba/commit/fd6176889a854c3bbc3286eea52eeb7f0dac8e14">view commit &bull;</a> Beta 4</li> 

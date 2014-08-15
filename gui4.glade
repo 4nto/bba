@@ -27,11 +27,6 @@
     <property name="can_focus">False</property>
     <property name="stock">gtk-refresh</property>
   </object>
-  <object class="GtkImage" id="img_anon">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="pixbuf">icon_anon.svg</property>
-  </object>
   <object class="GtkImage" id="img_clear">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -106,7 +101,7 @@
                         <property name="can_focus">False</property>
                         <property name="image">image7</property>
                         <property name="use_stock">False</property>
-                        <signal name="activate" handler="on_menu_network_activate" object="cmb_mac" swapped="no"/>
+                        <signal name="activate" handler="on_menu_network_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -117,7 +112,7 @@
                         <property name="can_focus">False</property>
                         <property name="image">image3</property>
                         <property name="use_stock">False</property>
-                        <signal name="activate" handler="on_menu_hostname_activate" swapped="no"/>
+                        <signal name="activate" handler="background_check" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -128,7 +123,7 @@
                         <property name="can_focus">False</property>
                         <property name="image">image4</property>
                         <property name="use_stock">False</property>
-                        <signal name="activate" handler="on_menu_clean_activate" swapped="no"/>
+                        <signal name="activate" handler="background_check" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -139,7 +134,7 @@
                         <property name="can_focus">False</property>
                         <property name="image">image5</property>
                         <property name="use_stock">False</property>
-                        <signal name="activate" handler="on_menu_tor_activate" swapped="no"/>
+                        <signal name="activate" handler="background_check" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -265,14 +260,12 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="button_mac">
+              <object class="GtkSwitch" id="switch_mac">
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="receives_default">True</property>
                 <property name="use_action_appearance">False</property>
-                <property name="image">img_anon</property>
-                <signal name="clicked" handler="on_button_mac_clicked" swapped="no"/>
+                <signal name="button-press-event" handler="on_press_event" swapped="no"/>
               </object>
               <packing>
                 <property name="resize">True</property>
@@ -337,7 +330,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="use_action_appearance">False</property>
-                <signal name="button-press-event" handler="on_switch_host_button_press_event" swapped="no"/>
+                <signal name="button-press-event" handler="on_press_event" swapped="no"/>
               </object>
               <packing>
                 <property name="resize">True</property>
@@ -404,7 +397,7 @@
                 <property name="receives_default">True</property>
                 <property name="use_action_appearance">False</property>
                 <property name="image">img_clear</property>
-                <signal name="clicked" handler="on_button_clean_clicked" swapped="no"/>
+                <signal name="clicked" handler="on_press_event" swapped="no"/>
               </object>
               <packing>
                 <property name="resize">True</property>
@@ -469,7 +462,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="use_action_appearance">False</property>
-                <signal name="button-press-event" handler="on_switch_tor_button_press_event" swapped="no"/>
+                <signal name="button-press-event" handler="on_press_event" swapped="no"/>
               </object>
               <packing>
                 <property name="resize">True</property>

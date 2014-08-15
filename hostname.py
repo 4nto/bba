@@ -6,7 +6,7 @@ from util import command_exist
 assert command_exist ("/usr/sbin/anonymous")
 
 class Hostname(Batch):
-    startup_file = '/var/log/dmesg'   
+    startup_file = '/var/log/kern.log'   
     cmd_check = 'fgrep "Linux version" ' + startup_file
     cmd_random = 'shuf -n 1 /etc/dictionaries-common/words'
     cmd_set = '/usr/sbin/anonymous start -h '

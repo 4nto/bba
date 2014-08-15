@@ -48,6 +48,7 @@ class NetworkInterfaces(Batch):
         self.selected = ifname
 
     def check (self, callback):
+        assert self.selected is not None
         def parser (fd):
             try:
                 macs = map (lambda line: self.pattern.search(line).group(), fd.readlines())
@@ -61,12 +62,14 @@ class NetworkInterfaces(Batch):
         self.set_callback (parser)
         self.run_and_parse()
 
-    def set(self, iface, callback):                
-        self.set_cmd (self.cmd_set + iface)
+    def set (self, callback):
+        assert self.selected is not None
+        self.set_cmd (self.cmd_set + self.selected)
         self.set_callback (callback)
         self.run()
 
-    def reset(self, iface, callback):
+    def reset (self, callback):
+        assert self.selected is not None
+        self.set_cmd (self.cmd_reset + self.selected)
         self.set_callback (callback)
-        self.set_cmd (self.cmd_reset + iface)
         self.run()

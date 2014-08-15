@@ -9,6 +9,7 @@ class Bleachbit(Batch):
 	cmd_start = "/usr/bin/bleachbit -c " + cleaners
 	cmd_start_overwrite = "/usr/bin/bleachbit -o -c " + cleaners
 	cmd_check = "/usr/bin/bleachbit -p -c '{}'".format(cleaners)
+	timeout = 30000 #milliseconds
 
 	def __init__(self, log, output):
                 self.log = log.getChild(__name__)
@@ -16,14 +17,14 @@ class Bleachbit(Batch):
 		self.set_writer (output)
 		self.set_no_overwrite()
 
-	def check(self, callback, seconds = 10):
+	def check(self, callback):
 		def parser (fd):
 			checkline = lambda line: 'Files to be deleted: 0' in line or 'File eliminati: 0' in line
 			callback (filter (checkline , fd.readlines()) != []) # it works only in english !!!	
 
 		self.set_cmd (self.cmd_check, False)
 		self.set_callback (parser)
-		self.run_and_parse()
+		self.run_and_parse(self.timeout)
 
 	def get(self):
 		return self.cleaners
@@ -37,5 +38,5 @@ class Bleachbit(Batch):
 	def start(self, callback):
                 self.set_no_overwrite()
                 self.set_callback (callback)
-		self.run()
+		self.run(self.timeout)
 

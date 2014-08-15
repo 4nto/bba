@@ -11,6 +11,7 @@ class NetworkInterfaces(Batch):
     cmd_reset = 'sh ../backbox-anonymous/usr/sbin/anonymous stop -m '
     cmd_check = 'macchanger -s '
     selected = None
+    timeout = 30000 #milliseconds
     
     def __init__(self, log, output):
         self.log = log.getChild(__name__)

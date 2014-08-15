@@ -11,6 +11,7 @@ class Hostname(Batch):
     cmd_random = 'shuf -n 1 /etc/dictionaries-common/words'
     cmd_set = '/usr/sbin/anonymous start -h '
     cmd_reset = '/usr/sbin/anonymous stop -h '
+    timeout = 30000 #milliseconds
 
     def __init__(self, log, one_char_writer):
         self.log = log.getChild(__name__)

@@ -1,5 +1,5 @@
 from gi.repository import GObject
-import shlex, os, tempfile
+import shlex, os, tempfile, signal
 
 class Batch(object):        
     def __init__ (self, log):
@@ -14,28 +14,64 @@ class Batch(object):
         assert isinstance (cmd, str) and isinstance (should_be_root, bool)
         self.cmd = shlex.split ('gksudo "{}"'.format(cmd) if os.geteuid() != 0 and should_be_root else cmd)
 
-    def run (self):
+    def run (self, seconds = 0):
         assert hasattr (self, 'cmd') and hasattr (self, 'callback') and hasattr (self, 'writer')        
         pid, _, stdout, stderr = self.__run_spawn_async()        
         GObject.io_add_watch (stdout, GObject.IO_IN, self.writer)
-        
+        if seconds > 0:
+            timeout_id = GObject.timeout_add (seconds, self.__timeout, pid)
+            
         def callback_runner (*args):
             self.callback()
             self.__error_parser (stderr)
+            if seconds > 0:
+                self.__timeout_remover (timeout_id)
         
-        GObject.child_watch_add (pid, callback_runner) 
+        GObject.child_watch_add (pid, callback_runner)
         
-    def run_and_parse(self):
+    def run_and_parse(self, seconds = 0):
         assert hasattr (self, 'cmd') and hasattr (self, 'callback')        
         pid, _, stdout, stderr = self.__run_spawn_async()
-                        
+        if seconds > 0:
+            timeout_id = GObject.timeout_add (seconds, self.__timeout, pid)
+            
         def callback_parser (*args):
             with os.fdopen(stdout) as fd:
                 self.callback(fd)
-            self.__error_parser (stderr)            
+            self.__error_parser (stderr)
+            if seconds > 0:
+                self.__timeout_remover (timeout_id)            
               
-        GObject.child_watch_add (pid, callback_parser)
+        GObject.child_watch_add (pid, callback_parser)        
+        
+    def set_writer (self, one_char_writer):
+        assert hasattr (one_char_writer, '__call__')
+        
+        def wrapped_writer (fd, condition):
+            if condition == GObject.IO_IN:     	# if there's something interesting to read
+                one_char_writer (os.read(fd, 1))     
+                return True                 	# Continue to call this source
 
+            return False			# Remove source
+
+        self.writer = wrapped_writer
+
+    def __timeout (self, pid):
+        try:
+            os.kill (pid, signal.SIGKILL)
+        except OSError:
+            '''Already died'''
+            pass
+        else:
+            self.log.warning ("command '{}' is taking too long, killed it".format(self.cmd[0]))
+        finally:
+            return False
+
+    def __timeout_remover (self, source_id):        
+        if not GObject.source_remove (source_id):
+            '''Timeout was reached so there is not source_id yet'''
+            print "I'm not able to remove the error above :)"            
+    
     def __run_spawn_async (self):
         return GObject.spawn_async (argv = self.cmd,
                                     envp = self.envp,
@@ -50,14 +86,4 @@ class Batch(object):
                 self.log.error ("running command '{}'".format(self.cmd[0]))
                 self.log.error (err.strip())
                     
-    def set_writer (self, one_char_writer):
-        assert hasattr (one_char_writer, '__call__')
-        
-        def wrapped_writer (fd, condition):
-            if condition == GObject.IO_IN:     	# if there's something interesting to read
-                one_char_writer (os.read(fd, 1))     
-                return True                 	# FUNDAMENTAL, otherwise the callback isn't recalled
 
-            return False			# Raised an error: exit and I don't want to see you anymore 
-
-        self.writer = wrapped_writer

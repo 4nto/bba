@@ -4,8 +4,8 @@ from util import command_exist
 assert command_exist ("/usr/bin/bleachbit")
 
 class Bleachbit(Batch):
-#	cleaners = "bash.history system.cache system.clipboard system.custom system.recent_documents system.rotated_logs system.tmp system.trash"
-	cleaners = "bash.history system.cache system.clipboard"
+	cleaners = "bash.history system.cache system.clipboard system.custom system.recent_documents system.rotated_logs system.tmp system.trash"
+#	cleaners = "bash.history system.cache system.clipboard"
 	cmd_start = "/usr/bin/bleachbit -c " + cleaners
 	cmd_start_overwrite = "/usr/bin/bleachbit -o -c " + cleaners
 	cmd_check = "/usr/bin/bleachbit -p -c '{}'".format(cleaners)

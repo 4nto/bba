@@ -13,9 +13,10 @@ wget -c https://raw.githubusercontent.com/4nto/backbox-anonymous/master/usr/sbin
 chmod +x anonymous
 mv anonymous /usr/sbin/anonymous
 ```
-* [bleachbit](http://bleachbit.sourceforge.net/)
-* [macchanger](http://www.gnu.org/software/macchanger/)
-* [python netifaces library](https://pypi.python.org/pypi/netiface)
+* [Tor][https://www.torproject.org/]
+* [Bleachbit](http://bleachbit.sourceforge.net/)
+* [GNU Macchanger](http://www.gnu.org/software/macchanger/)
+* [Python Netifaces](https://pypi.python.org/pypi/netiface)
 ```
-sudo apt-get install bleachbit macchanger python-netifaces
+sudo apt-get install tor bleachbit macchanger python-netifaces
 ```

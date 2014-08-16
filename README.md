@@ -1,7 +1,8 @@
 BackBox Anonymizer
 ==============
 
-A simple [backbox-anonymous](https://github.com/4nto/backbox-anonymous) GUI to anonymize your web activities by mixing Tor, Bleachbit and GNU Macchanger. <br />< br />
+A simple [backbox-anonymous](https://github.com/4nto/backbox-anonymous) GUI to anonymize your web activities by mixing Tor, Bleachbit and GNU Macchanger. <br /> 
+
 BBA works on Linux and is developed in python with GTK3/GObject.
 
 Dependecies

@@ -6,9 +6,9 @@ assert command_exist ("/usr/bin/bleachbit")
 class Bleachbit(Batch):
 	cleaners = "bash.history system.cache system.clipboard system.custom system.recent_documents system.rotated_logs system.tmp system.trash"
 #	cleaners = "bash.history system.cache system.clipboard"
-	cmd_start = "/usr/bin/bleachbit -c " + cleaners
-	cmd_start_overwrite = "/usr/bin/bleachbit -o -c " + cleaners
-	cmd_check = "/usr/bin/bleachbit -p -c '{}'".format(cleaners)
+	cmd_start = "/usr/bin/bleachbit -c {}".format(cleaners)
+	cmd_start_overwrite = "/usr/bin/bleachbit -o -c {}".format(cleaners)
+	cmd_check = "/usr/bin/bleachbit -p -c {}".format(cleaners)
 	timeout = 30000 #milliseconds
 
 	def __init__(self, log, output):
@@ -19,7 +19,7 @@ class Bleachbit(Batch):
 
 	def check(self, callback):
 		def parser (fd):
-			checkline = lambda line: 'Files to be deleted: 0' in line or 'File eliminati: 0' in line
+			checkline = lambda line: 'Files to be deleted: 0' in line or 'File da eliminare: 0' in line
 			callback (filter (checkline , fd.readlines()) != []) # it works only in english !!!	
 
 		self.set_cmd (self.cmd_check, False)

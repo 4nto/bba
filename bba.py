@@ -117,6 +117,28 @@ class BBA(GUI):
         adj = textview.get_vadjustment()
         adj.set_value(adj.get_upper() - adj.get_page_size())
 
+    def on_menu_about_activate (self, *args):
+        dialog = Gtk.MessageDialog (self.get_object("window"), 0, Gtk.MessageType.INFO, Gtk.ButtonsType.OK,
+                                    "BackBox Anonymizer")
+        
+        dialog.format_secondary_text ("version RC0")
+        dialog.run()
+        dialog.destroy()
+
+    def on_menu_file_save_activate (self, *args):
+        dialog =  Gtk.FileChooserDialog ("Please choose a file", self.get_object("window"), Gtk.FileChooserAction.SAVE,
+                                         (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, "Select", Gtk.ResponseType.OK))
+
+        response = dialog.run()
+        if response == Gtk.ResponseType.OK:
+            print("Select clicked")
+            print("Folder selected: " + dialog.get_filename())
+        elif response == Gtk.ResponseType.CANCEL:
+            print("Cancel clicked")
+
+        dialog.destroy()        
+        pass
+
 
 if __name__ == '__main__':
     bba = BBA("gui4.glade", "bba.log")

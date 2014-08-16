@@ -1,8 +1,9 @@
 BackBox Anonymizer
 ==============
 
-A simple GTK3 gui to anonymize your web activities by mixing common system tools. <br />
-It works on Linux.
+A simple GUI for backbox-anonymous script to anonymize your web activities by mixing Tor, Bleachbit and GNU Macchanger. <br />
+
+BBA works on Linux and is developed in python with GTK3/GObject.
 
 Dependecies
 --------------
@@ -13,9 +14,7 @@ wget -c https://raw.githubusercontent.com/4nto/backbox-anonymous/master/usr/sbin
 chmod +x anonymous
 mv anonymous /usr/sbin/anonymous
 ```
-* [bleachbit](http://bleachbit.sourceforge.net/)
-* [macchanger](http://www.gnu.org/software/macchanger/)
-* [python netifaces library](https://pypi.python.org/pypi/netiface)
+* [Tor](https://www.torproject.org/), [bleachbit](http://bleachbit.sourceforge.net/), [macchanger](http://www.gnu.org/software/macchanger/), and [Python Netifaces](https://pypi.python.org/pypi/netiface)
 ```
-sudo apt-get install bleachbit macchanger python-netifaces
+sudo apt-get install tor bleachbit macchanger python-netifaces
 ```

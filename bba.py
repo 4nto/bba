@@ -8,18 +8,23 @@ from hostname import Hostname
 from network import NetworkInterfaces
 from tor import Tor
 from bleachbit import Bleachbit
+from util import __version__, __python_version__, __gtk_version__, __license__
+
 
 class BBA(GUI):
     def __init__ (self, glade_file, log_file):
         GUI.__init__ (self, glade_file, log_file)
 
+        self.combobox = self.get_object("cmb_mac")
+        self.textview = self.get_object("textview1")
+        
         toggleImg = lambda value: Gtk.STOCK_APPLY if value else Gtk.STOCK_CANCEL
         grouping = lambda items: items if type (items) is list else [items]
-        
+
         self.setImg = lambda img, val: img.set_from_stock(toggleImg(val), Gtk.IconSize.BUTTON)
-        self.write_in_textview = lambda text: self.get_object("textview1").get_buffer().insert_at_cursor(text)      
+        self.write_in_textview = lambda text: self.textview.get_buffer().insert_at_cursor(text)      
         self.prop2group = lambda g, p, v: map (lambda i: getattr (i, p)(v), filter (lambda i: hasattr (i, p), grouping(g)))
-        self.combobox = self.get_object("cmb_mac")
+        
             
         self.ni =       NetworkInterfaces (self.log, self.write_in_textview)
         self.hname =    Hostname (self.log, self.write_in_textview)
@@ -118,26 +123,35 @@ class BBA(GUI):
         adj.set_value(adj.get_upper() - adj.get_page_size())
 
     def on_menu_about_activate (self, *args):
-        dialog = Gtk.MessageDialog (self.get_object("window"), 0, Gtk.MessageType.INFO, Gtk.ButtonsType.OK,
+        dialog = Gtk.MessageDialog (self.get_object("window"),
+                                    0,
+                                    Gtk.MessageType.INFO,
+                                    Gtk.ButtonsType.OK,
                                     "BackBox Anonymizer")
+
+        text = [__version__, __python_version__, __gtk_version__, '', __license__]        
+        dialog.format_secondary_text ("\n".join (text))
         
-        dialog.format_secondary_text ("version RC0")
         dialog.run()
         dialog.destroy()
 
     def on_menu_file_save_activate (self, *args):
-        dialog =  Gtk.FileChooserDialog ("Please choose a file", self.get_object("window"), Gtk.FileChooserAction.SAVE,
+        dialog =  Gtk.FileChooserDialog ("Please choose a file",
+                                         self.get_object("window"),
+                                         Gtk.FileChooserAction.SAVE,
                                          (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, "Select", Gtk.ResponseType.OK))
 
         response = dialog.run()
         if response == Gtk.ResponseType.OK:
-            print("Select clicked")
-            print("Folder selected: " + dialog.get_filename())
-        elif response == Gtk.ResponseType.CANCEL:
-            print("Cancel clicked")
+            with open(dialog.get_filename(), 'w') as f:
+                f.write(self.textview.get_buffer().get_text(self.textview.get_buffer().get_start_iter(),
+                                                            self.textview.get_buffer().get_end_iter(),
+                                                            True))
+
+            self.log.warning("Saved application log into {}".format(dialog.get_filename()))
 
         dialog.destroy()        
-        pass
+
 
 
 if __name__ == '__main__':

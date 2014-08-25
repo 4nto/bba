@@ -5,11 +5,11 @@ A simple GUI to anonymize your web activities by mixing Tor, Bleachbit and GNU M
 
 BBA works on Linux and is developed in python with GTK3/GObject, it is based on backbox-anonymous script
 
-![Linux](http://img.shields.io/badge/OS-Linux-blue.svg)
-![GTK](http://img.shields.io/badge/GUI-GTK-yellow.svg)
-![Python](http://img.shields.io/badge/Language-Python-green.svg) 
-![License](http://img.shields.io/badge/License-GNU_GPL_2.0-red.svg)
-![version RC0](http://img.shields.io/badge/Version-RC0-lightgrey.svg)
+![Linux](http://img.shields.io/badge/OS-Linux-blue.svg)&nbsp; 
+![GTK](http://img.shields.io/badge/GUI-GTK-yellow.svg)&nbsp; 
+![Python](http://img.shields.io/badge/Language-Python-green.svg)&nbsp; 
+![License](http://img.shields.io/badge/License-GNU_GPL_2.0-red.svg)&nbsp; 
+![version RC0](http://img.shields.io/badge/Version-RC0-lightgrey.svg)&nbsp; 
 
 Run
 --------------

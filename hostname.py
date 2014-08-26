@@ -22,13 +22,18 @@ class Hostname(Batch):
     ''' Get the system startup hostname '''
     def __startup_name (self, callback):
         def parser (fd):
-            try:
-                init_hostname = fd.readlines()[-1].split()[3]
-            except:
-                self.log.error ("Parsing error")
-                callback (False)
+            lines = fd.readlines()
+            if lines == []:
+                self.log.warning ("No hostname found in {}".format(self.startup_file))
+                callback (gethostname())
             else:
-                callback (init_hostname)
+                try:
+                    init_hostname = lines[-1].split()[3]
+                except:
+                    self.log.error ("Parsing error in {}".format(self.startup_file))
+                    callback (gethostname())
+                else:
+                    callback (init_hostname)
 
         self.set_cmd (self.cmd_check, should_be_root = False)
         self.set_callback (parser)

@@ -22,7 +22,7 @@ class BBA(GUI):
         grouping = lambda items: items if type (items) is list else [items]
 
         self.setImg = lambda img, val: img.set_from_stock(toggleImg(val), Gtk.IconSize.BUTTON)
-        self.write_in_textview = lambda text: self.textview.get_buffer().insert_at_cursor(text)      
+        self.write_in_textview = lambda text: self.textview.get_buffer().insert(self.textview.get_buffer().get_end_iter(), text)      
         self.prop2group = lambda g, p, v: map (lambda i: getattr (i, p)(v), filter (lambda i: hasattr (i, p), grouping(g)))
         
             

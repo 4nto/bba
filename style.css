@@ -1,0 +1,14 @@
+
+GtkScrolledWindow GtkTextView {
+	background-color: black;
+	color: white;
+	font-family: "Courier New", Courier, monospace
+}
+
+GtkSwitch {
+	border-style: solid;
+}
+
+GtkPaned {
+	border-width: 1px 5px 5px 1px
+}

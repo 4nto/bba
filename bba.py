@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 __author__ = 'Antonio De Rosa'
 
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GObject#, Gdk
 
 from gui import GUI
 from hostname import Hostname
@@ -12,8 +12,8 @@ from util import __version__, __python_version__, __gtk_version__, __license__
 
 
 class BBA(GUI):
-    def __init__ (self, glade_file, log_file):
-        GUI.__init__ (self, glade_file, log_file)
+    def __init__ (self, glade_file, log_file, css_file):
+        GUI.__init__ (self, glade_file, log_file, css_file)
 
         self.combobox = self.get_object("cmb_mac")
         self.textview = self.get_object("textview1")
@@ -82,6 +82,8 @@ class BBA(GUI):
         
         self.on_menu_network_activate()
         map (self.background_check, filter (lambda i: i != 'network', self.OnCheckEvents.keys()))
+        
+        #self.textview.override_background_color(Gtk.StateFlags.NORMAL,Gdk.RGBA(1.0,0.0,0.0,1))
 
     def background_check (self, control):
         d = self.OnCheckEvents[control]
@@ -152,8 +154,10 @@ class BBA(GUI):
 
         dialog.destroy()        
 
+    def on_menu_clear_activate (self, *args):
+        self.textview.get_buffer().delete(self.textview.get_buffer().get_start_iter(), self.textview.get_buffer().get_end_iter())
 
 
 if __name__ == '__main__':
-    bba = BBA("gui4.glade", "bba.log")
+    bba = BBA("gui4.glade", "bba.log", "style.css")
     bba()        

@@ -1,11 +1,18 @@
 import logging
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 
 class GUI(Gtk.Builder):
-    def __init__(self, glade_file, log_file):
+    def __init__(self, glade_file, log_file, css_file):
         Gtk.Builder.__init__(self)
         self.add_from_file(glade_file)
         self.connect_signals(self)
+
+        css = Gtk.CssProvider()
+        css.load_from_data('@import url("{}");'.format(css_file)) #css.load_from_file(css_file) doesn't work        
+        
+        Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(),
+                                                 css,
+                                                 Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
         
         self.log = logging.getLogger(__name__)
         fh = logging.FileHandler(log_file)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 __author__ = 'Antonio De Rosa'
 
-from gi.repository import Gtk, GObject#, Gdk
+from gi.repository import Gtk, GObject
 
 from gui import GUI
 from hostname import Hostname
@@ -18,41 +18,33 @@ class BBA(GUI):
         self.combobox = self.get_object("cmb_mac")
         self.textview = self.get_object("textview1")
         
-        #toggleImg = lambda value: Gtk.STOCK_APPLY if value else Gtk.STOCK_CANCEL
         grouping = lambda items: items if type (items) is list else [items]
-
-        #self.setImg = lambda img, val: img.set_from_stock(toggleImg(val), Gtk.IconSize.BUTTON)
         self.write_in_textview = lambda text: self.textview.get_buffer().insert(self.textview.get_buffer().get_end_iter(), text)      
         self.prop2group = lambda g, p, v: map (lambda i: getattr (i, p)(v), filter (lambda i: hasattr (i, p), grouping(g)))
-        
-            
-        self.ni =       NetworkInterfaces (self.log, self.write_in_textview)
-        self.hname =    Hostname (self.log, self.write_in_textview)
-        self.bleach =   Bleachbit (self.log, self.write_in_textview)
-        self.tor =      Tor (self.log, self.write_in_textview)
+                    
+        self.ni = NetworkInterfaces (self.log, self.write_in_textview)
+        self.hname = Hostname (self.log, self.write_in_textview)
+        self.bleach = Bleachbit (self.log, self.write_in_textview)
+        self.tor = Tor (self.log, self.write_in_textview)
 
         self.OnCheckEvents = {
             'network': {
                 'check':    self.ni.check,
-                #'image':    self.get_object('img_mac'),
                 'control':  self.get_object ('switch_mac'),
                 'messages': ["You real address?", "Spoofed imp"]
                 },
             self.get_object ('menu_hostname'): {
                 'check':    self.hname.check,
-                #'image':    self.get_object('img_host'),
                 'control':  self.get_object ('switch_host'),
                 'messages': ["I know your name", "Fucking liar"]
                 },
             self.get_object ('menu_clean'): {
                 'check':    self.bleach.check,
-                #'image':    self.get_object('img_clean'),
                 'control':  self.get_object ('button_clean'),
                 'messages': ["Sad data in your pc..", "Cleaned shit"]
                 },
             self.get_object ('menu_tor'): {
                 'check':    self.tor.check,
-                #'image':    self.get_object('img_tor'),
                 'control':  self.get_object ('switch_tor'),
                 'messages': ["You're visible", "Anonymous bastard"]
                 }
@@ -82,13 +74,10 @@ class BBA(GUI):
         
         self.on_menu_network_activate()
         map (self.background_check, filter (lambda i: i != 'network', self.OnCheckEvents.keys()))
-        
-        #self.textview.override_background_color(Gtk.StateFlags.NORMAL,Gdk.RGBA(1.0,0.0,0.0,1))
 
     def background_check (self, control):
         d = self.OnCheckEvents[control]
         def background_check_callback(is_already):
-            #self.setImg (d['image'], is_already)
             self.prop2group (d['control'], 'set_active', is_already)
             self.prop2group (d['control'], 'set_sensitive', True)
             self.write_in_textview (d['messages'][1 if is_already else 0] + '\n')

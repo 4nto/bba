@@ -226,8 +226,9 @@
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="halign">center</property>
                 <property name="valign">center</property>
+                <property name="margin_left">10</property>
+                <property name="margin_right">10</property>
                 <property name="use_action_appearance">False</property>
                 <signal name="button-press-event" handler="on_press_event" swapped="no"/>
               </object>
@@ -297,8 +298,9 @@
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="halign">center</property>
                 <property name="valign">center</property>
+                <property name="margin_left">10</property>
+                <property name="margin_right">10</property>
                 <property name="use_action_appearance">False</property>
                 <signal name="button-press-event" handler="on_press_event" swapped="no"/>
               </object>
@@ -338,8 +340,9 @@
                 <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="halign">center</property>
                 <property name="valign">center</property>
+                <property name="margin_left">10</property>
+                <property name="margin_right">10</property>
                 <property name="use_action_appearance">False</property>
                 <signal name="button-press-event" handler="on_press_event" swapped="no"/>
               </object>
@@ -380,8 +383,9 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="halign">center</property>
                 <property name="valign">center</property>
+                <property name="margin_left">10</property>
+                <property name="margin_right">10</property>
                 <property name="use_action_appearance">False</property>
                 <property name="image">img_clear</property>
                 <signal name="clicked" handler="on_press_event" swapped="no"/>

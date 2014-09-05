@@ -4,10 +4,10 @@ import sys
 from gi.repository import Gtk, GObject
 
 # Defining the current prog version
-__version__ = "Version RC5"
+__version__ = "Version RC7"
 __python_version__ = "Python v" + ".".join (map (str, sys.version_info[:3]))
 __gtk_version__ = "GTK v{}.{}.{}".format (Gtk.get_major_version(), Gtk.get_minor_version(), Gtk.get_micro_version())
-__license__ = "GNU General Public License, version 2"
+__license__ = "GNU GPL version 2"
 
 def command_exist(fpath):
     return os.path.isfile(fpath) and os.access(fpath, os.X_OK)

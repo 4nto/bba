@@ -1,4 +1,4 @@
-import re
+import re, os
 from socket import gethostname
 from batch import Batch
 from util import command_exist
@@ -6,7 +6,7 @@ from util import command_exist
 assert command_exist ("/usr/sbin/anonymous")
 
 class Hostname(Batch):
-    startup_file = '/var/log/kern.log'   
+    startup_file = '/var/log/kern.log.1'   
     cmd_check = 'fgrep "Linux version" ' + startup_file
     cmd_random = 'shuf -n 1 /etc/dictionaries-common/words'
     cmd_set = '/usr/sbin/anonymous start -h '
@@ -37,7 +37,7 @@ class Hostname(Batch):
 
         self.set_cmd (self.cmd_check, should_be_root = False)
         self.set_callback (parser)
-        self.run_and_parse()        
+        self.run_and_parse()
 
     def check (self, callback):
         def check_callback (init_hostname):

@@ -2,13 +2,25 @@
 GtkScrolledWindow GtkTextView {
 	background-color: black;
 	color: white;
-	font-family: "Courier New", Courier, monospace
+	font-family: "Courier New", Courier, monospace;
 }
 
 GtkSwitch {
 	border-style: solid;
+	border-radius: 4px;
 }
 
-GtkPaned {
-	border-width: 1px 5px 5px 1px
+GtkSwitch:focused {
+	border-radius: 0;
 }
+
+GtkButton {
+	border-radius: 4px;
+}
+
+/*
+GtkPaned > GtkButton {
+	border-width: 0 20px;
+	background-color: black;
+}
+*/

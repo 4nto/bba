@@ -70,7 +70,8 @@ class Batch(object):
     def __timeout_remover (self, source_id):        
         if not GObject.source_remove (source_id):
             '''Timeout was reached so there is not source_id yet'''
-            print "I'm not able to remove the error above :)"            
+            pass
+            # print "I'm not able to remove the error above :)"            
     
     def __run_spawn_async (self):
         return GObject.spawn_async (argv = self.cmd,

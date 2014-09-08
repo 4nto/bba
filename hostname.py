@@ -6,11 +6,10 @@ from util import command_exist
 assert command_exist ("/usr/sbin/anonymous")
 
 class Hostname(Batch):
+    script_anonymous = '/usr/sbin/anonymous'
     startup_file = '/var/log/kern.log.1'   
     cmd_check = 'fgrep "Linux version" ' + startup_file
     cmd_random = 'shuf -n 1 /etc/dictionaries-common/words'
-    cmd_set = '/usr/sbin/anonymous start -h '
-    cmd_reset = '/usr/sbin/anonymous stop -h '
     timeout = 30000 #milliseconds
 
     def __init__(self, log, one_char_writer):
@@ -18,6 +17,7 @@ class Hostname(Batch):
         Batch.__init__ (self, self.log)
         self.set_writer (one_char_writer)        
         self.pattern = re.compile (r"[a-z]*", re.I)
+        self.set_script(self.script_anonymous)
 
     ''' Get the system startup hostname '''
     def __startup_name (self, callback):
@@ -72,4 +72,9 @@ class Hostname(Batch):
         
     def get(self):
         return gethostname()
+
+    def set_script (self, script):
+        self.script_anonymous = script
+        self.cmd_set = script + ' start -h '
+        self.cmd_reset = script + ' stop -h '        
     

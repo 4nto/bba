@@ -3,7 +3,7 @@ __author__ = 'Antonio De Rosa'
 
 from gi.repository import Gtk, GObject
 
-from gui import GUI
+from gui import GUI, WrappedFileChooserDialog
 from hostname import Hostname
 from network import NetworkInterfaces
 from tor import Tor
@@ -127,25 +127,33 @@ class BBA(GUI):
         dialog.destroy()
 
     def on_menu_file_save_activate (self, *args):
-        dialog =  Gtk.FileChooserDialog ("Please choose a file",
+        with WrappedFileChooserDialog ("Please choose a file",
                                          self.get_object("window"),
                                          Gtk.FileChooserAction.SAVE,
-                                         (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, "Select", Gtk.ResponseType.OK))
+                                         (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, "Select", Gtk.ResponseType.OK)) as fcd:
 
-        response = dialog.run()
-        if response == Gtk.ResponseType.OK:
-            with open(dialog.get_filename(), 'w') as f:
-                f.write(self.textview.get_buffer().get_text(self.textview.get_buffer().get_start_iter(),
-                                                            self.textview.get_buffer().get_end_iter(),
-                                                            True))
+            if fcd['response'] == Gtk.ResponseType.OK:
+                with open(fcd['dialog'].get_filename(), 'w') as f:
+                    f.write(self.textview.get_buffer().get_text(self.textview.get_buffer().get_start_iter(),
+                                                                self.textview.get_buffer().get_end_iter(),
+                                                                True))
 
-            self.log.warning("Saved application log into {}".format(dialog.get_filename()))
-
-        dialog.destroy()        
+                self.log.warning("Saved application log into {}".format(fcd['dialog'].get_filename()))       
 
     def on_menu_clear_activate (self, *args):
         self.textview.get_buffer().delete(self.textview.get_buffer().get_start_iter(), self.textview.get_buffer().get_end_iter())
 
+    def on_menu_script_activate (self, *args):
+        with WrappedFileChooserDialog ("Choose your backbox-anonymous file path..",
+                                  self.get_object("window"),
+                                  Gtk.FileChooserAction.OPEN,
+                                  (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, "Select", Gtk.ResponseType.OK)) as fcd:
+
+            if fcd['response'] == Gtk.ResponseType.OK:
+                self.log.warning("Set backbox-anonymous script as {}".format(fcd['dialog'].get_filename()))
+                print self.hname.script_anonymous, self.ni.script_anonymous, self.tor.script_anonymous
+                map (lambda o: o.set_script(fcd['dialog'].get_filename()), (self.hname, self.ni, self.tor))
+                print self.hname.script_anonymous, self.ni.script_anonymous, self.tor.script_anonymous
 
 if __name__ == '__main__':
     bba = BBA("gui5.glade", "bba.log", "style.css")

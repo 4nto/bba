@@ -28,6 +28,11 @@
     <property name="can_focus">False</property>
     <property name="stock">gtk-dialog-question</property>
   </object>
+  <object class="GtkImage" id="image6">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-execute</property>
+  </object>
   <object class="GtkImage" id="image7">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -164,6 +169,23 @@
                         <property name="image">image5</property>
                         <property name="use_stock">False</property>
                         <signal name="activate" handler="background_check" swapped="no"/>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSeparatorMenuItem" id="separator2">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkImageMenuItem" id="menu_script">
+                        <property name="label">Change anonymize script path</property>
+                        <property name="use_action_appearance">False</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="image">image6</property>
+                        <property name="use_stock">False</property>
+                        <signal name="activate" handler="on_menu_script_activate" swapped="no"/>
                       </object>
                     </child>
                   </object>

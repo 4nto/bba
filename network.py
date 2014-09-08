@@ -7,8 +7,7 @@ assert command_exist ("/usr/bin/macchanger")
 assert command_exist ("/usr/sbin/anonymous")
 
 class NetworkInterfaces(Batch):
-    cmd_set = 'sh ../backbox-anonymous/usr/sbin/anonymous start -m '
-    cmd_reset = 'sh ../backbox-anonymous/usr/sbin/anonymous stop -m '
+    script_anonymous = '/usr/sbin/anonymous'
     cmd_check = 'macchanger -s '
     selected = None
     timeout = 30000 #milliseconds
@@ -18,6 +17,7 @@ class NetworkInterfaces(Batch):
         Batch.__init__ (self, self.log)
         self.set_writer (output)
         self.pattern = re.compile (r"([0-9A-F]{2}[:-]){5}([0-9A-F]{2})", re.I)
+        self.set_script(self.script_anonymous)
         self.update()
 
     def update(self):
@@ -74,3 +74,8 @@ class NetworkInterfaces(Batch):
         self.set_cmd (self.cmd_reset + self.selected)
         self.set_callback (callback)
         self.run()
+        
+    def set_script (self, script):
+        self.script_anonymous = script
+        self.cmd_set = script + ' start -m '
+        self.cmd_reset = script + ' stop -m '

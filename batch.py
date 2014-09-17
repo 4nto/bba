@@ -15,39 +15,58 @@ class Batch(object):
         self.callback = callback
 
     def set_cmd (self, cmd, should_be_root=True):
-        assert isinstance (cmd, str) and isinstance (should_be_root, bool)
+        assert isinstance (should_be_root, bool)
         self.cmd = shlex.split ('gksudo "{}"'.format(cmd) if os.geteuid() != 0 and should_be_root else cmd)
 
-    def run (self, seconds = 0):
+    def run (self, mseconds = 0):
         assert hasattr (self, 'cmd') and hasattr (self, 'callback') and hasattr (self, 'writer')        
         pid, _, stdout, stderr = self.__run_spawn_async()        
         GObject.io_add_watch (stdout, GObject.IO_IN, self.writer)
-        if seconds > 0:
-            timeout_id = GObject.timeout_add (seconds, self.__timeout, pid)
+        if mseconds > 0:
+            timeout_id = GObject.timeout_add (mseconds, self.__timeout, pid)
             
         def callback_runner (*args):
             self.callback()
             self.__error_parser (stderr)
-            if seconds > 0:
+            if mseconds > 0:
                 self.__timeout_remover (timeout_id)
         
         GObject.child_watch_add (pid, callback_runner)
         
-    def run_and_parse(self, seconds = 0):
+    def ipc_pipe_based(self, mseconds = 0):
         assert hasattr (self, 'cmd') and hasattr (self, 'callback')        
         pid, _, stdout, stderr = self.__run_spawn_async()
-        if seconds > 0:
-            timeout_id = GObject.timeout_add (seconds, self.__timeout, pid)        
+        if mseconds > 0:
+            timeout_id = GObject.timeout_add (mseconds, self.__timeout, pid)        
             
         def callback_parser (*args):
             with io.open(stdout) as fd:
                 self.callback(fd)
             self.__error_parser (stderr)
-            if seconds > 0:
+            if mseconds > 0:
                 self.__timeout_remover (timeout_id)            
               
         GObject.child_watch_add (pid, callback_parser)
+
+    def ipc_file_based (self, mseconds = 0):
+        assert hasattr (self, 'cmd') and hasattr (self, 'callback')
+        self.cmd = ['python', 'fprocess.py'] + self.cmd
+        pid, _, stdout, stderr = self.__run_spawn_async()
         
+        if mseconds > 0:
+            timeout_id = GObject.timeout_add (mseconds, self.__timeout, pid)
+            
+        def callback_parser (*args):
+            with io.open(stdout) as fd:
+                with open(fd.read().strip()) as output:
+                    self.callback(output)
+                    
+            self.__error_parser (stderr)
+            if mseconds > 0:
+                self.__timeout_remover (timeout_id)                     
+                    
+        GObject.child_watch_add (pid, callback_parser)
+    
     def set_writer (self, one_char_writer):
         assert hasattr (one_char_writer, '__call__')
         
@@ -85,7 +104,7 @@ class Batch(object):
                                     standard_error = True)
 
     def __error_parser (self, stderr):
-        with os.fdopen(stderr) as fd:
+        with io.open(stderr) as fd:
             err = fd.read()
             if err.strip() != "":
                 self.log.error ("running command '{}'".format(self.cmd[0]))

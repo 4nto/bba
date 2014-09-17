@@ -8,7 +8,8 @@ class Bleachbit(Batch):
 #   cleaners = "bash.history system.cache system.clipboard"
     cmd_start = "/usr/bin/bleachbit -c {}".format(cleaners)
     cmd_start_overwrite = "/usr/bin/bleachbit -o -c {}".format(cleaners)
-    cmd_check = "python fprocess.py /usr/bin/bleachbit -p -c {}".format(cleaners)
+#    cmd_check = "python fprocess.py /usr/bin/bleachbit -p -c {}".format(cleaners)
+    cmd_check = "/usr/bin/bleachbit -p -c {}".format(cleaners)
     timeout = 60000 #60sec 
     file_to_delete = "n/a"
 
@@ -21,17 +22,16 @@ class Bleachbit(Batch):
 
     def check(self, callback):
         def parser (fd):
-            with open(fd.read().strip()) as f:
-                line = filter (self.checkline , f)
-		try:
-			self.file_to_delete = line[0].split(':')[1].strip() 
-		except:
-			 self.file_to_delete = "n/a"
-                callback ( line != []) # it works only in english !!!
+            line = filter (self.checkline , fd)
+            try:
+                self.file_to_delete = line[0].split(':')[1].strip() 
+            except:
+                self.file_to_delete = "n/a"
+            callback ( line != []) # it works only in english !!!
                         
         self.set_cmd (self.cmd_check, False)
         self.set_callback (parser)
-        self.run_and_parse(self.timeout)
+        self.ipc_file_based(self.timeout)
         
     def get(self):
         return self.cleaners

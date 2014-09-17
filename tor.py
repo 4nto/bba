@@ -27,7 +27,7 @@ class Tor(Batch):
 
         self.set_cmd (self.cmd_check, should_be_root = False)
         self.set_callback (parser)
-        self.run_and_parse(self.timeout)
+        self.ipc_pipe_based(self.timeout)
 
     def start (self, callback):
         self.set_callback (callback)

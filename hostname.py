@@ -10,7 +10,7 @@ class Hostname(Batch):
     startup_file = '/var/log/kern.log.1'   
     cmd_check = 'fgrep "Linux version" ' + startup_file
     cmd_random = 'shuf -n 1 /etc/dictionaries-common/words'
-    timeout = 30000 #milliseconds
+    timeout = 30000 #30sec
 
     def __init__(self, log, one_char_writer):
         self.log = log.getChild(__name__)
@@ -39,7 +39,7 @@ class Hostname(Batch):
 
         self.set_cmd (self.cmd_check, should_be_root = False)
         self.set_callback (parser)
-        self.run_and_parse()
+        self.ipc_pipe_based()
 
     def check (self, callback):
         def check_callback (init_hostname):
@@ -70,7 +70,7 @@ class Hostname(Batch):
 
         self.set_callback (random_callback) 
         self.set_cmd (self.cmd_random, False)
-        self.run_and_parse()
+        self.ipc_pipe_based()
         
     def get(self):
         return gethostname()

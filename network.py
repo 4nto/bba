@@ -55,7 +55,7 @@ class NetworkInterfaces(Batch):
                         
         self.set_cmd (self.cmd_check + self.selected, should_be_root = False)
         self.set_callback (parser)
-        self.run_and_parse()
+        self.ipc_pipe_based()
 
     def set (self, callback):
         assert self.selected is not None

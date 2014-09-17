@@ -34,13 +34,7 @@ class NetworkInterfaces(Batch):
             self.default_gw = get_default_gateway_linux()
 
         if self.default_gw is None:
-            self.log.warning ("Unable to find default gateway..".format(self.default_gw))
-            
-    def get_interfaces (self):
-        return self.interfaces
-        
-    def get_default (self):
-        return self.default_gw
+            self.log.warning ("Unable to find default gateway..".format(self.default_gw))            
         
     def get_addr(self, iname):
         return self.ifaddresses[iname] if iname in self.ifaddresses.keys() else None        

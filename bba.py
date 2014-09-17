@@ -31,22 +31,25 @@ class BBA(GUI):
             'network': {
                 'check':    self.ni.check,
                 'control':  self.get_object ('switch_mac'),
-                'messages': ["You real address?", "Spoofed imp"]
+                'messages': lambda b: "{} MAC address {} is {}".format(self.selected_interface(),
+									self.ni.get_addr(self.selected_interface()),
+									"SPOOFED" if b else "REAL")
                 },
             self.get_object ('menu_hostname'): {
                 'check':    self.hname.check,
                 'control':  self.get_object ('switch_host'),
-                'messages': ["I know your name", "Fucking liar"]
+                'messages': lambda b: "Hostname {} is {} from the last boot".format(self.hname.get(),
+                                                                                         "different" if b else "the same")
                 },
             self.get_object ('menu_clean'): {
                 'check':    self.bleach.check,
                 'control':  self.get_object ('button_clean'),
-                'messages': ["Sad data in your pc..", "Cleaned shit"]
+                'messages': lambda b: "There are {} files to remove".format(self.bleach.file_to_delete) if b else "Your system is clean"
                 },
             self.get_object ('menu_tor'): {
                 'check':    self.tor.check,
                 'control':  self.get_object ('switch_tor'),
-                'messages': ["You're visible", "Anonymous bastard"]
+                'messages': lambda b: "IP {}: you are {}using Tor".format(self.tor.IP, "" if b else "not ")
                 }
             }
 
@@ -80,25 +83,27 @@ class BBA(GUI):
         def background_check_callback(is_already):
             self.prop2group (d['control'], 'set_active', is_already)
             self.prop2group (d['control'], 'set_sensitive', True)
-            self.write_in_textview (d['messages'][1 if is_already else 0] + '\n')
+            self.write_in_textview (d['messages'](is_already) + '\n')
             
         self.prop2group (d['control'], 'set_sensitive', False)
         d['check'](background_check_callback)            
 
     def on_cmb_mac_changed (self, *args):
-        text = self.combobox.get_active_text() 
-        selected_interface = text if text is None or '(default)' not in text else text[:-10]
-        if selected_interface is not None:
-            self.ni.select (selected_interface)
-            
+        interface = self.selected_interface()
+        if interface is not None:
+            self.ni.select (interface)
         self.background_check ('network')
+
+    def selected_interface (self):
+        text = self.combobox.get_active_text()
+        return text if text is None or '(default)' not in text else text[:-10]
 
     def on_menu_network_activate (self, *args):        
         self.ni.update()
         self.combobox.remove_all()
-        if self.ni.get_default() is not None:
-            self.combobox.append_text(self.ni.get_default() + " (default)")
-        map (self.combobox.append_text, filter (lambda iface: iface != self.ni.get_default(), self.ni.get_interfaces()))        
+        if self.ni.default_gw is not None:
+            self.combobox.append_text(self.ni.default_gw + " (default)")
+        map (self.combobox.append_text, filter (lambda iface: iface != self.ni.default_gw, self.ni.interfaces))        
         self.combobox.set_active(0) # it launches event CHANGED on combobox
 
     def on_press_event (self, control, *args):
@@ -151,9 +156,7 @@ class BBA(GUI):
 
             if fcd['response'] == Gtk.ResponseType.OK:
                 self.log.warning("Set backbox-anonymous script as {}".format(fcd['dialog'].get_filename()))
-                print self.hname.script_anonymous, self.ni.script_anonymous, self.tor.script_anonymous
                 map (lambda o: o.set_script(fcd['dialog'].get_filename()), (self.hname, self.ni, self.tor))
-                print self.hname.script_anonymous, self.ni.script_anonymous, self.tor.script_anonymous
 
 if __name__ == '__main__':
     bba = BBA("gui5.glade", "bba.log", "style.css")

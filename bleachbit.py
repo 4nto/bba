@@ -4,39 +4,46 @@ from util import command_exist
 assert command_exist ("/usr/bin/bleachbit")
 
 class Bleachbit(Batch):
-	cleaners = "bash.history system.cache system.clipboard system.custom system.recent_documents system.rotated_logs system.tmp system.trash"
-#	cleaners = "bash.history system.cache system.clipboard"
-	cmd_start = "/usr/bin/bleachbit -c {}".format(cleaners)
-	cmd_start_overwrite = "/usr/bin/bleachbit -o -c {}".format(cleaners)
-	cmd_check = "/usr/bin/bleachbit -p -c {}".format(cleaners)
-	timeout = 30000 #milliseconds
+    cleaners = "bash.history system.cache system.clipboard system.custom system.recent_documents system.rotated_logs system.tmp system.trash"
+#   cleaners = "bash.history system.cache system.clipboard"
+    cmd_start = "/usr/bin/bleachbit -c {}".format(cleaners)
+    cmd_start_overwrite = "/usr/bin/bleachbit -o -c {}".format(cleaners)
+    cmd_check = "python fprocess.py /usr/bin/bleachbit -p -c {}".format(cleaners)
+    timeout = 60000 #60sec 
+    file_to_delete = "n/a"
 
-	def __init__(self, log, output):
-                self.log = log.getChild(__name__)
-		Batch.__init__ (self, self.log)		
-		self.set_writer (output)
-		self.set_no_overwrite()
+    def __init__(self, log, output):
+        self.log = log.getChild(__name__)
+        Batch.__init__ (self, self.log)     
+        self.set_writer (output)
+        self.set_no_overwrite()
+        self.checkline = lambda line: 'Files to be deleted' in line or 'File da eliminare' in line
 
-	def check(self, callback):
-		def parser (fd):
-			checkline = lambda line: 'Files to be deleted: 0' in line or 'File da eliminare: 0' in line
-			callback (filter (checkline , fd.readlines()) != []) # it works only in english !!!	
+    def check(self, callback):
+        def parser (fd):
+            with open(fd.read().strip()) as f:
+                line = filter (self.checkline , f)
+		try:
+			self.file_to_delete = line[0].split(':')[1].strip() 
+		except:
+			 self.file_to_delete = "n/a"
+                callback ( line != []) # it works only in english !!!
+                        
+        self.set_cmd (self.cmd_check, False)
+        self.set_callback (parser)
+        self.run_and_parse(self.timeout)
+        
+    def get(self):
+        return self.cleaners
 
-		self.set_cmd (self.cmd_check, False)
-		self.set_callback (parser)
-		self.run_and_parse(self.timeout)
+    def set_no_overwrite(self):
+        self.set_cmd (self.cmd_start, False)
 
-	def get(self):
-		return self.cleaners
+    def set_overwrite(self):
+        self.set_cmd (self.cmd_start_overwrite, False)
 
-	def set_no_overwrite(self):
-		self.set_cmd (self.cmd_start, False)
-
-	def set_overwrite(self):
-		self.set_cmd (self.cmd_start_overwrite, False)
-
-	def start(self, callback):
-                self.set_no_overwrite()
-                self.set_callback (callback)
-		self.run(self.timeout)
+    def start(self, callback):
+        self.set_no_overwrite()
+        self.set_callback (callback)
+        self.run(self.timeout)
 

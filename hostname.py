@@ -18,7 +18,9 @@ class Hostname(Batch):
         self.set_writer (one_char_writer)        
         self.pattern = re.compile (r"[a-z]*", re.I)
         self.set_script(self.script_anonymous)
-
+	if not os.path.isfile(self.startup_file):
+            self.set_startup_file('/var/log/kern.log')		
+		
     ''' Get the system startup hostname '''
     def __startup_name (self, callback):
         def parser (fd):
@@ -76,5 +78,9 @@ class Hostname(Batch):
     def set_script (self, script):
         self.script_anonymous = script
         self.cmd_set = script + ' start -h '
-        self.cmd_reset = script + ' stop -h '        
-    
+        self.cmd_reset = script + ' stop -h '
+
+    def set_startup_file (self, fname):
+        self.startup_file = fname
+        self.cmd_check = 'fgrep "Linux version" ' + self.startup_file
+        

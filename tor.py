@@ -1,3 +1,4 @@
+import re
 from batch import Batch
 from util import command_exist
 
@@ -7,6 +8,7 @@ class Tor(Batch):
     script_anonymous = '/usr/sbin/anonymous'    
     cmd_check = 'curl -s https://check.torproject.org/?lang=en_US'
     timeout = 30000 #milliseconds
+    IP = 'n/a'
     
     def __init__(self, log, output):
         self.log = log.getChild(__name__)
@@ -14,10 +16,14 @@ class Tor(Batch):
         self.set_writer (output)
         self.checkline = lambda line: 'Congratulations. This browser is' in line
         self.set_script(self.script_anonymous)
+        self.pattern = re.compile (r'[0-9]+(?:\.[0-9]+){3}', re.I)
         
     def check (self, callback):
         def parser (fd):
-            callback (filter (self.checkline, fd.readlines()) != [])
+            lines = fd.readlines()
+            IPline = filter(lambda line: "IP address" in line, lines)
+            self.IP = self.pattern.search(IPline[0]).group() if len(IPline) == 1 else 'n/a'
+            callback (filter (self.checkline, lines) != [])
 
         self.set_cmd (self.cmd_check, should_be_root = False)
         self.set_callback (parser)

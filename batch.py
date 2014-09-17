@@ -1,5 +1,9 @@
 from gi.repository import GObject
-import shlex, os, tempfile, signal
+import shlex
+import os
+#import tempfile
+import signal
+import io
 
 class Batch(object):        
     def __init__ (self, log):
@@ -33,16 +37,16 @@ class Batch(object):
         assert hasattr (self, 'cmd') and hasattr (self, 'callback')        
         pid, _, stdout, stderr = self.__run_spawn_async()
         if seconds > 0:
-            timeout_id = GObject.timeout_add (seconds, self.__timeout, pid)
+            timeout_id = GObject.timeout_add (seconds, self.__timeout, pid)        
             
         def callback_parser (*args):
-            with os.fdopen(stdout) as fd:
+            with io.open(stdout) as fd:
                 self.callback(fd)
             self.__error_parser (stderr)
             if seconds > 0:
                 self.__timeout_remover (timeout_id)            
               
-        GObject.child_watch_add (pid, callback_parser)        
+        GObject.child_watch_add (pid, callback_parser)
         
     def set_writer (self, one_char_writer):
         assert hasattr (one_char_writer, '__call__')

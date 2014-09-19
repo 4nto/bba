@@ -36,10 +36,10 @@ class Bleachbit(Batch):
         return self.cleaners
 
     def set_no_overwrite(self):
-        self.set_cmd (self.cmd_start, False)
+        self.set_cmd (self.cmd_start)
 
     def set_overwrite(self):
-        self.set_cmd (self.cmd_start_overwrite, False)
+        self.set_cmd (self.cmd_start_overwrite)
 
     def start(self, callback):
         self.set_no_overwrite()

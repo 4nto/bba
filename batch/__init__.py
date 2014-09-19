@@ -50,7 +50,7 @@ class Batch(object):
 
     def ipc_file_based (self, mseconds = 0):
         assert hasattr (self, 'cmd') and hasattr (self, 'callback')
-        self.cmd = ['python', 'fprocess.py'] + self.cmd
+        self.cmd = ['python', 'batch/fprocess.py'] + self.cmd
         pid, _, stdout, stderr = self.__run_spawn_async()
         
         if mseconds > 0:
@@ -105,9 +105,7 @@ class Batch(object):
 
     def __error_parser (self, stderr):
         with io.open(stderr) as fd:
-            err = fd.read()
+            err = fd.read().strip()
             if err.strip() != "":
-                self.log.error ("running command '{}'".format(self.cmd[0]))
-                self.log.error (err.strip())
+                self.log.error ("running '{}': {}".format(' '.join(self.cmd), err))
                     
-

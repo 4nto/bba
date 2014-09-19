@@ -8,7 +8,6 @@ class Bleachbit(Batch):
 #   cleaners = "bash.history system.cache system.clipboard"
     cmd_start = "/usr/bin/bleachbit -c {}".format(cleaners)
     cmd_start_overwrite = "/usr/bin/bleachbit -o -c {}".format(cleaners)
-#    cmd_check = "python fprocess.py /usr/bin/bleachbit -p -c {}".format(cleaners)
     cmd_check = "/usr/bin/bleachbit -p -c {}".format(cleaners)
     timeout = 60000 #60sec 
     file_to_delete = "n/a"

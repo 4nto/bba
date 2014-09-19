@@ -39,7 +39,7 @@ class BBA(GUI):
                 'check':    self.hname.check,
                 'control':  self.get_object ('switch_host'),
                 'messages': lambda b: "Hostname {} is {} from the last boot".format(self.hname.get(),
-                                                                                         "different" if b else "the same")
+                                                                                    "different ({})".format(self.hname.last_hostname) if b else "the same")
                 },
             self.get_object ('menu_clean'): {
                 'check':    self.bleach.check,

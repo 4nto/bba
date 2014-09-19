@@ -4,10 +4,10 @@ from batch import Batch
 from util import command_exist, version_cmp, get_default_gateway_linux
 
 assert command_exist ("/usr/bin/macchanger")
-assert command_exist ("/usr/sbin/anonymous")
+assert command_exist ("anonymous")
 
 class NetworkInterfaces(Batch):
-    script_anonymous = '/usr/sbin/anonymous'
+    script_anonymous = 'anonymous'
     cmd_check = 'macchanger -s '
     selected = None
     timeout = 30000 #milliseconds

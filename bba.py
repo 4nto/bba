@@ -26,30 +26,32 @@ class BBA(GUI):
         self.hname = Hostname (self.log, self.write_in_textview)
         self.bleach = Bleachbit (self.log, self.write_in_textview)
         self.tor = Tor (self.log, self.write_in_textview)
-
+		
+	net_msg = lambda b: "{} MAC address {} is {}".format(self.ni.selected, self.ni.get_addr(self.ni.selected), "SPOOFED" if b else "REAL")
+	hname_msg = lambda b: "Hostname {} is {} from the last boot".format(self.hname.get(), "different ({})".format(self.hname.last_hostname) if b else "the same")
+	bleach_msg = lambda b: "There are {} files to remove".format(self.bleach.file_to_delete) if b else "Your system is clean"
+	tor_msg = lambda b: "IP {}: you are {}using Tor".format(self.tor.IP, "" if b else "not ")
+		
         self.OnCheckEvents = {
             'network': {
                 'check':    self.ni.check,
                 'control':  self.get_object ('switch_mac'),
-                'messages': lambda b: "{} MAC address {} is {}".format(self.selected_interface(),
-									self.ni.get_addr(self.selected_interface()),
-									"SPOOFED" if b else "REAL")
+                'messages': net_msg																		
                 },
             self.get_object ('menu_hostname'): {
                 'check':    self.hname.check,
                 'control':  self.get_object ('switch_host'),
-                'messages': lambda b: "Hostname {} is {} from the last boot".format(self.hname.get(),
-                                                                                    "different ({})".format(self.hname.last_hostname) if b else "the same")
+                'messages': hname_msg
                 },
             self.get_object ('menu_clean'): {
                 'check':    self.bleach.check,
                 'control':  self.get_object ('button_clean'),
-                'messages': lambda b: "There are {} files to remove".format(self.bleach.file_to_delete) if b else "Your system is clean"
+                'messages': bleach_msg
                 },
             self.get_object ('menu_tor'): {
                 'check':    self.tor.check,
                 'control':  self.get_object ('switch_tor'),
-                'messages': lambda b: "IP {}: you are {}using Tor".format(self.tor.IP, "" if b else "not ")
+                'messages': tor_msg
                 }
             }
 
@@ -159,5 +161,5 @@ class BBA(GUI):
                 map (lambda o: o.set_script(fcd['dialog'].get_filename()), (self.hname, self.ni, self.tor))
 
 if __name__ == '__main__':
-    bba = BBA("gui5.glade", "bba.log", "style.css")
+    bba = BBA("gui/gui5.glade", "bba.log", "gui/style.css")
     bba()        

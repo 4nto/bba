@@ -2,10 +2,10 @@ import re
 from batch import Batch
 from util import command_exist
 
-assert command_exist ("/usr/sbin/anonymous")
+assert command_exist ("anonymous")
 
 class Tor(Batch):
-    script_anonymous = '/usr/sbin/anonymous'    
+    script_anonymous = 'anonymous'    
     cmd_check = 'curl -s https://check.torproject.org/?lang=en_US'
     timeout = 30000 #milliseconds
     IP = 'n/a'

@@ -3,10 +3,10 @@ from socket import gethostname
 from batch import Batch
 from util import command_exist
 
-assert command_exist ("/usr/sbin/anonymous")
+assert command_exist ("anonymous")
 
 class Hostname(Batch):
-    script_anonymous = '/usr/sbin/anonymous'
+    script_anonymous = 'anonymous'
     cmd_check = 'python hostname/check.py'
     cmd_random = 'python hostname/randomize.py'
     last_hostname = 'n/a'

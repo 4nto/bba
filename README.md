@@ -17,7 +17,10 @@ Download ZIP file then launch ./bba.py
 
 Dependecies
 --------------
-* [Tor](https://www.torproject.org/), [Bleachbit](http://bleachbit.sourceforge.net/), [GNU Macchanger](http://www.gnu.org/software/macchanger/), and [Python Netifaces](https://pypi.python.org/pypi/netiface)
+* [Tor](https://www.torproject.org/) to surf anonymously
+* [Bleachbit](http://bleachbit.sourceforge.net/) to clean your system
+* [GNU Macchanger](http://www.gnu.org/software/macchanger/) to change your physical address
+* [Python Netifaces](https://pypi.python.org/pypi/netiface) to build this application
 ```sh
 sudo apt-get install tor bleachbit macchanger python-netifaces
 ```

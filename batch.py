@@ -1,7 +1,6 @@
 from gi.repository import GObject
 import shlex
 import os
-#import tempfile
 import signal
 import io
 
@@ -27,7 +26,8 @@ class Batch(object):
             
         def callback_runner (*args):
             self.callback()
-            self.__error_parser (stderr)
+            with io.open(stderr) as err:
+                self.__error_parser (err.read())
             if mseconds > 0:
                 self.__timeout_remover (timeout_id)
         
@@ -40,31 +40,13 @@ class Batch(object):
             timeout_id = GObject.timeout_add (mseconds, self.__timeout, pid)        
             
         def callback_parser (*args):
-            with io.open(stdout) as fd:
-                self.callback(fd)
-            self.__error_parser (stderr)
-            if mseconds > 0:
-                self.__timeout_remover (timeout_id)            
+            with io.open(stdout) as out, io.open(stderr) as err:
+                self.callback((args[1] >> 8) & 0xFF, out.read())
+                self.__error_parser (err.read())
               
-        GObject.child_watch_add (pid, callback_parser)
-
-    def ipc_file_based (self, mseconds = 0):
-        assert hasattr (self, 'cmd') and hasattr (self, 'callback')
-        self.cmd = ['python', 'batch/fprocess.py'] + self.cmd
-        pid, _, stdout, stderr = self.__run_spawn_async()
-        
-        if mseconds > 0:
-            timeout_id = GObject.timeout_add (mseconds, self.__timeout, pid)
-            
-        def callback_parser (*args):
-            with io.open(stdout) as fd:
-                with open(fd.read().strip()) as output:
-                    self.callback(output)
-                    
-            self.__error_parser (stderr)
             if mseconds > 0:
-                self.__timeout_remover (timeout_id)                     
-                    
+                self.__timeout_remover (timeout_id)          
+              
         GObject.child_watch_add (pid, callback_parser)
     
     def set_writer (self, one_char_writer):
@@ -81,7 +63,7 @@ class Batch(object):
 
     def __timeout (self, pid):
         try:
-            os.kill (pid, signal.SIGKILL)
+            os.kill (pid, signal.SIGINT)
         except OSError:
             '''Already died'''
             pass
@@ -103,9 +85,8 @@ class Batch(object):
                                     standard_output = True,
                                     standard_error = True)
 
-    def __error_parser (self, stderr):
-        with io.open(stderr) as fd:
-            err = fd.read().strip()
-            if err.strip() != "":
-                self.log.error ("running '{}': {}".format(' '.join(self.cmd), err))
+    def __error_parser (self, err):
+        if err.strip() != "":
+            self.log.error ("running '{}': {}".format(' '.join(self.cmd), err))
+        
                     

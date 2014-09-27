@@ -44,9 +44,9 @@ class NetworkInterfaces(Batch):
 
     def check (self, callback):
         assert self.selected is not None
-        def parser (fd):
+        def parser (exit_code, stdout):
             try:
-                macs = map (lambda line: self.pattern.search(line).group(), fd.readlines())
+                macs = map (lambda line: self.pattern.search(line).group(), stdout.strip().strip().split('\n'))
             except:
                 self.log.error ("Parsing error")
                 callback (False)                

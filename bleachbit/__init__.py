@@ -5,10 +5,9 @@ assert command_exist ("/usr/bin/bleachbit")
 
 class Bleachbit(Batch):
     cleaners = "bash.history system.cache system.clipboard system.custom system.recent_documents system.rotated_logs system.tmp system.trash"
-#   cleaners = "bash.history system.cache system.clipboard"
     cmd_start = "/usr/bin/bleachbit -c {}".format(cleaners)
     cmd_start_overwrite = "/usr/bin/bleachbit -o -c {}".format(cleaners)
-    cmd_check = "/usr/bin/bleachbit -p -c {}".format(cleaners)
+    cmd_check = 'python bleachbit/check.py'
     timeout = 60000 #60sec 
     file_to_delete = "n/a"
 
@@ -20,17 +19,19 @@ class Bleachbit(Batch):
         self.checkline = lambda line: 'Files to be deleted' in line or 'File da eliminare' in line
 
     def check(self, callback):
-        def parser (fd):
-            line = filter (self.checkline , fd)
-            try:
-                self.file_to_delete = line[0].split(':')[1].strip() 
-            except:
-                self.file_to_delete = "n/a"
-            callback ( line != []) # it works only in english !!!
-                        
+        def parser (exit_code, stdout):
+            if exit_code == 0:
+                self.msg = "Your system is clean"
+            elif exit_code == 1:
+                self.msg = "There are {} files to remove".format(stdout)
+            else:
+                self.msg = "Unable to verify your data"
+
+            callback(True if exit_code == 0 else False)
+            
         self.set_cmd (self.cmd_check, False)
         self.set_callback (parser)
-        self.ipc_file_based(self.timeout)
+        self.ipc_pipe_based(self.timeout)        
         
     def get(self):
         return self.cleaners

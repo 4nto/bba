@@ -28,9 +28,6 @@ class BBA(GUI):
         self.tor = Tor (self.log, self.write_in_textview)
 		
 	net_msg = lambda b: "{} MAC address {} is {}".format(self.ni.selected, self.ni.get_addr(self.ni.selected), "SPOOFED" if b else "REAL")
-	hname_msg = lambda b: "Hostname {} is {} from the last boot".format(self.hname.get(), "different ({})".format(self.hname.last_hostname) if b else "the same")
-	bleach_msg = lambda b: "There are {} files to remove".format(self.bleach.file_to_delete) if b else "Your system is clean"
-	tor_msg = lambda b: "IP {}: you are {}using Tor".format(self.tor.IP, "" if b else "not ")
 		
         self.OnCheckEvents = {
             'network': {
@@ -41,17 +38,17 @@ class BBA(GUI):
             self.get_object ('menu_hostname'): {
                 'check':    self.hname.check,
                 'control':  self.get_object ('switch_host'),
-                'messages': hname_msg
+                'messages': lambda b: self.hname.msg
                 },
             self.get_object ('menu_clean'): {
                 'check':    self.bleach.check,
                 'control':  self.get_object ('button_clean'),
-                'messages': bleach_msg
+                'messages': lambda b: self.bleach.msg
                 },
             self.get_object ('menu_tor'): {
                 'check':    self.tor.check,
                 'control':  self.get_object ('switch_tor'),
-                'messages': tor_msg
+                'messages': lambda b: self.tor.msg
                 }
             }
 

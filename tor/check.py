@@ -4,7 +4,7 @@ import re
 import sys
 import urllib2
 
-SIGINT_RECEIVED = "SIGINT received", 2
+SIGINT_RECEIVED = "SIGINT received (timeout or CTRL+C)", 2
 NO_CONNECTION = "Unable to retrieve URL ", 3
 UNKNOWN_ERROR = "Unknown error: ", 4
 
@@ -21,13 +21,13 @@ def check():
     return 0 if filter (checkline, lines) != [] else 1
 
 try:
-    exit(check())
+    sys.exit(check())
 except KeyboardInterrupt:
     sys.stderr.write(SIGINT_RECEIVED[0])
-    exit(SIGINT_RECEIVED[1])
+    sys.exit(SIGINT_RECEIVED[1])
 except (urllib2.HTTPError, urllib2.URLError):
     sys.stderr.write(NO_CONNECTION[0] + url)
-    exit(NO_CONNECTION[1])    
+    sys.exit(NO_CONNECTION[1])    
 except Exception as inst:
     sys.stderr.write(UNKNOWN_ERROR[0] + str(inst))
-    exit(UNKNOWN_ERROR[1])
+    sys.exit(UNKNOWN_ERROR[1])

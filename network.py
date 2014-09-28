@@ -21,7 +21,8 @@ class NetworkInterfaces(Batch):
         self.update()
 
     def update(self):
-        self.interfaces = filter (lambda i: i != "lo", NI.interfaces()) # don't consider lo interface
+        '''Do not consider "lo" interface and interface without physical addr (virtual)'''
+        self.interfaces = filter (lambda i: i != "lo" and NI.ifaddresses(i).has_key(NI.AF_LINK), NI.interfaces()) 
         self.ifaddresses = {i:NI.ifaddresses(i)[NI.AF_LINK][0]['addr'] for i in self.interfaces}
 
         # netifaces version must be greater than 0.10.4

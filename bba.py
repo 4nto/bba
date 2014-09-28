@@ -10,7 +10,6 @@ from tor import Tor
 from bleachbit import Bleachbit
 from util import __version__, __python_version__, __gtk_version__, __license__
 
-
 class BBA(GUI):
     def __init__ (self, glade_file, log_file, css_file):
         GUI.__init__ (self, glade_file, log_file, css_file)

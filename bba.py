@@ -146,16 +146,6 @@ class BBA(GUI):
     def on_menu_clear_activate (self, *args):
         self.textview.get_buffer().delete(self.textview.get_buffer().get_start_iter(), self.textview.get_buffer().get_end_iter())
 
-    def on_menu_script_activate (self, *args):
-        with WrappedFileChooserDialog ("Choose your backbox-anonymous file path..",
-                                  self.get_object("window"),
-                                  Gtk.FileChooserAction.OPEN,
-                                  (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, "Select", Gtk.ResponseType.OK)) as fcd:
-
-            if fcd['response'] == Gtk.ResponseType.OK:
-                self.log.warning("Set backbox-anonymous script as {}".format(fcd['dialog'].get_filename()))
-                map (lambda o: o.set_script(fcd['dialog'].get_filename()), (self.hname, self.ni, self.tor))
-
 if __name__ == '__main__':
     bba = BBA("gui/gui5.glade", "bba.log", "gui/style.css")
     bba()        

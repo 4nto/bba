@@ -1,9 +1,14 @@
 '''Get a random name for the hostname'''
-import os, sys, random
+import os
+import sys
+import random
 
-words = '/etc/dictionaries-common/words'
+from __init__ import config
 
 def randomize(fname):
+    if not os.path.isfile(fname):
+        config.exit_with_error('file_not_found')
+        
     total_bytes = os.stat(fname).st_size
     with open(fname) as f:
         f.seek(random.randint(0, total_bytes))
@@ -11,5 +16,9 @@ def randomize(fname):
             randomize(fname)
         else:
             sys.stdout.write(f.readline())
-        
-randomize(words)
+            sys.exit(0)
+
+try:
+    randomize(config.get('config', 'random'))
+except KeyboardInterrupt:
+    config.exit_with_error('sigint_received')

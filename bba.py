@@ -4,10 +4,10 @@ __author__ = 'Antonio De Rosa'
 from gi.repository import Gtk, GObject
 
 from gui import GUI, WrappedFileChooserDialog
-from hostname import Hostname
+from hostname.wrapper import Hostname
 from network import NetworkInterfaces
-from tor import Tor
-from bleachbit import Bleachbit
+from tor.wrapper import Tor
+from bleachbit.wrapper import Bleachbit
 from util import __version__, __python_version__, __gtk_version__, __license__
 
 class BBA(GUI):

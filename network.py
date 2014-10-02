@@ -22,7 +22,7 @@ class NetworkInterfaces(Batch):
 
     def update(self):
         '''Do not consider "lo" interface and interface without physical addr (virtual)'''
-        self.interfaces = filter (lambda i: i != "lo" and NI.ifaddresses(i).has_key(NI.AF_LINK), NI.interfaces()) 
+        self.interfaces = filter (lambda i: i != "lo" and NI.AF_LINK in NI.ifaddresses(i), NI.interfaces()) 
         self.ifaddresses = {i:NI.ifaddresses(i)[NI.AF_LINK][0]['addr'] for i in self.interfaces}
 
         # netifaces version must be greater than 0.10.4
@@ -47,7 +47,7 @@ class NetworkInterfaces(Batch):
         assert self.selected is not None
         def parser (exit_code, stdout):
             try:
-                macs = map (lambda line: self.pattern.search(line).group(), stdout.strip().strip().split('\n'))
+                macs = map (lambda line: self.pattern.search(line).group(), stdout.strip().splitlines())
             except:
                 self.log.error ("Parsing error")
                 callback (False)                

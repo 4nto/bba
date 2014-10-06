@@ -1,6 +1,6 @@
 import re, subprocess, pkg_resources
 import netifaces as NI
-from batch import Batch
+from util.batch import Batch
 from util import command_exist, version_cmp, get_default_gateway_linux
 
 assert command_exist ("/usr/bin/macchanger")

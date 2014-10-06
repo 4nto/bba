@@ -1,4 +1,4 @@
-from batch import Batch
+from util.batch import Batch
 from __init__ import config
 
 class Tor(Batch):

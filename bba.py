@@ -6,8 +6,9 @@ from gi.repository import Gtk, GObject
 from gui import GUI, WrappedFileChooserDialog
 from hostname.wrapper import Hostname
 from network import NetworkInterfaces
-from tor.wrapper import Tor
-from bleachbit.wrapper import Bleachbit
+#from tor.wrapper import Tor
+from util.wrapper import Wrapper
+#from bleachbit.wrapper import Bleachbit
 from util import __version__, __python_version__, __gtk_version__, __license__
 
 class BBA(GUI):
@@ -23,8 +24,10 @@ class BBA(GUI):
                     
         self.ni = NetworkInterfaces (self.log, self.write_in_textview)
         self.hname = Hostname (self.log, self.write_in_textview)
-        self.bleach = Bleachbit (self.log, self.write_in_textview)
-        self.tor = Tor (self.log, self.write_in_textview)
+        #self.bleach = Bleachbit (self.log, self.write_in_textview)
+        #self.tor = Tor (self.log, self.write_in_textview)
+        self.tor = Wrapper (self.log, self.write_in_textview, 'tor/tor.cfg')
+        self.bleach = Wrapper (self.log, self.write_in_textview, 'bleachbit/bleachbit.cfg')
 		
 	net_msg = lambda b: "{} MAC address {} is {}".format(self.ni.selected, self.ni.get_addr(self.ni.selected), "SPOOFED" if b else "REAL")
 		

@@ -3,7 +3,10 @@ import os
 import sys
 import socket
 
-from __init__ import config
+sys.path.append('.') 
+from util.configuration import Configurator
+
+config = Configurator('hostname/hostname.cfg')
 
 def lookup(fname, cnt = 0):
     if cnt > 0:

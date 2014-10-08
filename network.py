@@ -7,7 +7,7 @@ assert command_exist ("/usr/bin/macchanger")
 assert command_exist ("anonymous")
 
 class NetworkInterfaces(Batch):
-    script_anonymous = 'anonymous'
+    script_anonymous = './anonymous'
     cmd_check = 'macchanger -s '
     selected = None
     timeout = 30000 #milliseconds

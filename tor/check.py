@@ -4,7 +4,10 @@ import re
 import sys
 import urllib2
 
-from __init__ import config
+sys.path.append('.') 
+from util.configuration import Configurator
+
+config = Configurator('tor/tor.cfg')
 
 def check():
     pattern = re.compile (r'[0-9]+(?:\.[0-9]+){3}', re.I)

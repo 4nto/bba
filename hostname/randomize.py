@@ -3,7 +3,10 @@ import os
 import sys
 import random
 
-from __init__ import config
+sys.path.append('.') 
+from util.configuration import Configurator
+
+config = Configurator('hostname/hostname.cfg')
 
 def randomize(fname):
     if not os.path.isfile(fname):

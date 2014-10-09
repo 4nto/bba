@@ -23,11 +23,12 @@ class BBA(GUI):
         self.prop2group = lambda g, p, v: map (lambda i: getattr (i, p)(v), filter (lambda i: hasattr (i, p), grouping(g)))
                     
         self.ni = NetworkInterfaces (self.log, self.write_in_textview)
-        self.hname = Hostname (self.log, self.write_in_textview)
+        #self.hname = Hostname (self.log, self.write_in_textview)
         #self.bleach = Bleachbit (self.log, self.write_in_textview)
         #self.tor = Tor (self.log, self.write_in_textview)
         self.tor = Wrapper (self.log, self.write_in_textview, 'tor/tor.cfg')
         self.bleach = Wrapper (self.log, self.write_in_textview, 'bleachbit/bleachbit.cfg')
+        self.hname = Wrapper (self.log, self.write_in_textview, 'hostname/hostname.cfg')
 		
 	net_msg = lambda b: "{} MAC address {} is {}".format(self.ni.selected, self.ni.get_addr(self.ni.selected), "SPOOFED" if b else "REAL")
 		
@@ -61,8 +62,8 @@ class BBA(GUI):
                 'callback': self.on_cmb_mac_changed
                 },
             self.get_object ('switch_host'): {
-                'active':   self.hname.reset,
-                'inactive': self.hname.randomize,
+                'active':   self.hname.stop,
+                'inactive': self.hname.start,
                 'callback': lambda: self.background_check (self.get_object ('menu_hostname'))
                 },
             self.get_object ('button_clean'): {

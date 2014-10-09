@@ -26,7 +26,7 @@ def lookup(fname, cnt = 0):
                 config.exit_with_error('parsing_error')                
             else:
                 sys.stdout.write(hostname)
-                if hostname != socket.gethostname():
+                if hostname == socket.gethostname():
                     config.exit_with_error('ko')
 
 try:

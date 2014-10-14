@@ -4,11 +4,9 @@ __author__ = 'Antonio De Rosa'
 from gi.repository import Gtk, GObject
 
 from gui import GUI, WrappedFileChooserDialog
-from hostname.wrapper import Hostname
 from network import NetworkInterfaces
-#from tor.wrapper import Tor
+#import network, tor, hostname, bleachbit to execute __init__ files?
 from util.wrapper import Wrapper
-#from bleachbit.wrapper import Bleachbit
 from util import __version__, __python_version__, __gtk_version__, __license__
 
 class BBA(GUI):
@@ -23,9 +21,6 @@ class BBA(GUI):
         self.prop2group = lambda g, p, v: map (lambda i: getattr (i, p)(v), filter (lambda i: hasattr (i, p), grouping(g)))
                     
         self.ni = NetworkInterfaces (self.log, self.write_in_textview)
-        #self.hname = Hostname (self.log, self.write_in_textview)
-        #self.bleach = Bleachbit (self.log, self.write_in_textview)
-        #self.tor = Tor (self.log, self.write_in_textview)
         self.tor = Wrapper (self.log, self.write_in_textview, 'tor/tor.cfg')
         self.bleach = Wrapper (self.log, self.write_in_textview, 'bleachbit/bleachbit.cfg')
         self.hname = Wrapper (self.log, self.write_in_textview, 'hostname/hostname.cfg')

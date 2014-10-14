@@ -8,12 +8,13 @@ class Wrapper(Batch):
         self.set_writer (output)
         self.config = Configurator(cfg)
         self.last = {'stdout': '', 'exit code': 0}
+        self.output = output
     
     def check (self, callback):
         def parser (exit_code, stdout):
             self.last['stdout'] = stdout 
-            self.last['exit code'] = exit_code             
-            self.msg = self.config.translate(str(exit_code)).format(stdout)
+            self.last['exit code'] = exit_code
+            self.output(self.config.translate(str(exit_code)).format(stdout) + '\n')
             callback(True if exit_code == 0 else False)
             
         self.set_cmd(self.config.get('cmd', 'check'), should_be_root = False)

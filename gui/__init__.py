@@ -43,3 +43,40 @@ class WrappedFileChooserDialog(Gtk.FileChooserDialog):
     
     def __exit__(self, *args):
         self.destroy()
+
+class PanedSwitchLabel(Gtk.Paned):
+    def __init__(self, wrapper):
+        Gtk.Paned.__init__(self)
+        self.wrapper = wrapper
+        
+        self.set_position(100)
+        self.label = Gtk.Label(wrapper.config.get('config', 'title'))
+        self.label.set_halign(Gtk.Align.START)
+        self.switch = Gtk.Switch()
+        self.switch.set_margin_left(10)
+        self.switch.set_margin_right(20)
+        self.switch.set_valign(Gtk.Align.CENTER)
+        self.switch.set_active(False)
+        self.add1(self.switch)
+        self.add2(self.label)
+        self.show_all()
+
+    def connect_wrapper(self):
+        def check_callback(is_already):
+            self.switch.set_active(is_already)
+            self.switch.set_sensitive(True)
+                
+        def callback(*args):            
+            self.switch.set_sensitive(False)
+            self.wrapper.check(check_callback)
+                
+        def toggle(widget, *args):
+            self.wrapper.stop(callback) if self.switch.get_active() else self.wrapper.start(callback)                            
+                
+        #self.switch.connect('notify::active', toggle)
+        self.switch.connect('button-press-event', toggle)
+            
+
+        self.switch.set_sensitive(False)
+        self.wrapper.check(check_callback)        
+        

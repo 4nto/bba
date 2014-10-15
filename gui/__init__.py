@@ -76,7 +76,6 @@ class PanedSwitchLabel(Gtk.Paned):
         #self.switch.connect('notify::active', toggle)
         self.switch.connect('button-press-event', toggle)
             
-
         self.switch.set_sensitive(False)
         self.wrapper.check(check_callback)        
         

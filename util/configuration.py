@@ -6,6 +6,7 @@ class Configurator(ConfigParser.SafeConfigParser):
     def __init__(self, fname):
         ConfigParser.SafeConfigParser.__init__(self, allow_no_value = True)
         self.read(fname)
+        self.fname = fname
 
     def translate(self, code):
         match = filter(lambda c: c[1] == code, self.items('code'))

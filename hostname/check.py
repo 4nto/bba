@@ -1,35 +1,28 @@
-'''Get the last system startup hostname'''
-import os
-import sys
+'''Check the passed argument hostname with the current hostname'''
+from __future__ import print_function
 import socket
+import sys
 
-sys.path.append('.') 
-from util.configuration import Configurator
+if len(sys.argv) != 2:
+    print("Bad command line arguments", file=sys.stderr)
+    print("Unable to retrieve your last boot hostname")
+    sys.exit(2)
 
-config = Configurator('hostname/hostname.cfg')
-
-def lookup(fname, cnt = 0):
-    if cnt > 0:
-        fname = '{}.{}'.format(fname[:-2] if cnt > 1 else fname, cnt)       
-
-    if not os.path.isfile(fname):
-        config.exit_with_error('file_not_found' if cnt == 0 else 'string_not_found')
+def check(hostname):
+    if hostname == socket.gethostname():
+        print("Hostname {} is the same from the last boot".format(hostname))
+        sys.exit(1)
+        
+    print("Hostname {} is different from the last boot {}".format(socket.gethostname(), hostname))        
     
-    with open(fname) as f:
-        startup_lines = filter (lambda line: "Linux version" in line, f)
-        if len(startup_lines) == 0:
-            lookup(fname, cnt + 1)
-        else:
-            try:
-                hostname = startup_lines[-1].split()[3]
-            except:
-                config.exit_with_error('parsing_error')                
-            else:
-                sys.stdout.write(hostname)
-                if hostname == socket.gethostname():
-                    config.exit_with_error('ko')
 
 try:
-    lookup(config.get('config', 'kernel_log'))
+    check(sys.argv[1])
 except KeyboardInterrupt:
-    config.exit_with_error('sigint_received')
+    print("SIGINT received (timeout or CTRL+C)", file=sys.stderr)
+    print("Unable to retrieve your last boot hostname")
+    sys.exit(2)
+except Exception as inst:
+    print("Unknown_error: {}".format(inst), file=sys.stderr)
+    print("Unable to retrieve your last boot hostname")
+    sys.exit(2)

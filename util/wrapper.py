@@ -1,34 +1,45 @@
 import os
 from util.batch import Batch
-from util.configuration import Configurator
 
 class Wrapper(Batch):        
-    def __init__(self, log, output, cfg):
-        self.log = log.getChild(os.path.dirname(cfg))
-        Batch.__init__ (self, self.log)
-        self.set_writer (output)
-        self.config = Configurator(cfg)
-        self.last = {'stdout': '', 'exit code': 0}
-        self.output = output
+    def __init__(self, log, output, config):
+        self.name = os.path.dirname(config.fname)
+        self.log = log.getChild(self.name)
+        Batch.__init__(self, self.log)
+        self.set_writer(output)
+        self.config = config
+        self.output = output        
 
-    def check_dependences(self):
-        command_exist = lambda fpath: os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+    def enable(self, enable_widget):
+        '''
+        VERIFY STEP
+        Run in a separate process the verify script and if it returns no error then enables the related widget
+        If there is no verify script enables the widget
+        '''
         try:
-            dependences = self.config.get('config', 'assert')
+            cmd = self.config.get('cmd', 'init')
         except:
-            self.log.warning("No dependencies defined")
+            enable_widget()
+            self.log.warning("No verify script for module {}".format(self.config.fname))
         else:
-            if not all(map(command_exist, dependences.split(','))):
-                self.log.error("Unable to load module due to missing dependences: {}".format(dependences))
-                return False
-        finally:
-            return True
+            def parser (exit_code, stdout):                 
+                if exit_code == 0:
+                    enable_widget()                        
+                else:
+                    self.output('Module "{}" disabled due to misconfiguration\n'.format(self.name))
+            
+            self.set_cmd(cmd, should_be_root = False)
+            self.set_callback(parser)
+            self.ipc_pipe_based(self.config.getint('config', 'timeout'))
         
     def check (self, callback):
+        '''
+        CHECK STEP
+        Run in a separate process the check script, writes to gui console the stdout and according the exit code
+        command the related widget
+        '''
         def parser (exit_code, stdout):
-            self.last['stdout'] = stdout 
-            self.last['exit code'] = exit_code
-            self.output(self.config.translate(str(exit_code)).format(stdout) + '\n')
+            self.output(stdout)
             callback(True if exit_code == 0 else False)
             
         self.set_cmd(self.config.get('cmd', 'check'), should_be_root = False)
@@ -37,11 +48,10 @@ class Wrapper(Batch):
 
     def start (self, callback):
         self.set_callback(callback)
-        self.set_cmd(self.config.get('cmd', 'start').format(self.last['stdout']))
+        self.set_cmd(self.config.get('cmd', 'start'))
         self.run(self.config.getint('config', 'timeout'))
 
     def stop (self, callback):
         self.set_callback(callback)
-        self.set_cmd(self.config.get('cmd', 'stop').format(self.last['stdout']))
+        self.set_cmd(self.config.get('cmd', 'stop'))
         self.run(self.config.getint('config', 'timeout'))
-

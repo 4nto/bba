@@ -1,8 +1,10 @@
-import os
-import sys
-import shutil
-import ConfigParser
+'''Set up the network config files'''
+from __future__ import print_function
 import netifaces as NI
+import ConfigParser
+import shutil
+import sys
+import os
 
 # Thanks to ssokolow from http://stackoverflow.com/questions/2761829
 def get_default_gateway_linux():
@@ -17,21 +19,30 @@ def get_default_gateway_linux():
 config = ConfigParser.SafeConfigParser()
 default_gw = get_default_gateway_linux()
 
-'''Remove last created files'''
-for fname in filter (lambda fname: 'network-' in fname, os.listdir('network')):
-    os.remove('network/{}'.format(fname))
+def create_interfaces_configurator():
+    '''Remove last created files'''
+    for fname in filter (lambda fname: 'network-' in fname, os.listdir('network')):
+        os.remove('network/{}'.format(fname))
 
-'''Do not consider "lo" interface and interface without physical addr (virtual)'''
-for iface in filter (lambda i: i != "lo" and NI.AF_LINK in NI.ifaddresses(i), NI.interfaces()):
-    fname = 'network/network-{}.cfg'.format(iface)
-    shutil.copyfile('network/network.cfg', fname)
+    '''Do not consider "lo" interface and interface without physical addr (virtual)'''
+    for iface in filter (lambda i: i != "lo" and NI.AF_LINK in NI.ifaddresses(i), NI.interfaces()):
+        fname = 'network/network-{}.cfg'.format(iface)
+        shutil.copyfile('network/network.cfg', fname)
 
-    config.read(fname)    
-    config.set('DEFAULT', 'interface', iface)    
-    if iface == default_gw:
-        config.set('DEFAULT', 'default_gw', '(default)')
-        config.set('config', 'hide', str(False))
-        
-    with open(fname, 'wb') as f:
-        config.write(f)
+        config.read(fname)    
+        config.set('DEFAULT', 'interface', iface)    
+        if iface == default_gw:
+            config.set('DEFAULT', 'default_gw', '(default)')
+            config.set('config', 'hide', str(False))
+            
+        with open(fname, 'wb') as f:
+            config.write(f)
 
+        yield fname
+
+try:
+    map(print, create_interfaces_configurator())
+except Exception as inst:
+    print("Unable to set up network interfaces")
+    print("Unable to set up network interfaces: {}".format(inst), sys.stderr)
+    sys.exit(1)

@@ -49,8 +49,11 @@ class PanedWidget(Gtk.Paned):
                 self.wrapper.start(callback)                                               
                     
         def connect_wrapper_button(widget, *args):
+            def check_callback(is_already):
+                self.control.set_sensitive(is_already)
+                
             def callback(*args):            
-                self.wrapper.check(lambda *args: self.control.set_sensitive(True))
+                self.wrapper.check(check_callback)
                 
             widget.set_sensitive(False)
             self.wrapper.start(callback)                                                           
@@ -68,9 +71,12 @@ class PanedWidget(Gtk.Paned):
             self.label.set_sensitive(True)
             self.wrapper.check(check_callback)                            
             
-        def enable_widget_button(sensitive):                                
+        def enable_widget_button(sensitive):
+            def check_callback(is_already):
+                self.control.set_sensitive(is_already)
+                
             self.label.set_sensitive(True)
-            self.wrapper.check(lambda dummy: self.control.set_sensitive(sensitive))
+            self.wrapper.check(check_callback)
 
         if self.button:
             self.wrapper.verify(enable_widget_button)

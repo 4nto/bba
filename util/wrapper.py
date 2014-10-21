@@ -27,7 +27,7 @@ class Wrapper(Batch):
 
         '''(2) Is there the verify script?'''
         if not self.config.has_option('cmd', 'init'):            
-            self.log.warning("No verify script for module {}".format(self.config.fname))
+            self.log.warning("No verify script")
             enabling_widget(True)
             return
 

@@ -39,7 +39,7 @@ def configure_module(module, load_widget_module, log):
                     dconfig.read(line)
                     load_widget_module(module, dconfig)
             else:
-                log.error("Error setting up the module:{}".format(stdout))
+                log.error("Error setting up the module: {}".format(stdout))
                 
         setup.set_cmd(cmd, should_be_root = False)                    
         setup.set_callback(setup_callback)
@@ -65,7 +65,7 @@ def configure_module(module, load_widget_module, log):
         if mconfig.has_option('config', 'setup'):                                    
             run_setup_script(mconfig.get('config', 'setup'))
         else:
-            log.warning("No setup for module {}".format(module))                                     
+            log.warning("No setup for module")
             load_widget_module(module, mconfig) 
     else:
         log.error("No configuration file")

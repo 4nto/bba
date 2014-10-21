@@ -1,7 +1,8 @@
+'''Class to manage the multi-process batching architecture'''
 from gi.repository import GObject
+import signal
 import shlex
 import os
-import signal
 import io
 
 class Batch(object):        
@@ -29,7 +30,7 @@ class Batch(object):
             with io.open(stderr) as err:
                 self.__error_parser (err.read())
             if mseconds > 0:
-                self.__timeout_remover (timeout_id)
+                GObject.source_remove (timeout_id)
         
         GObject.child_watch_add (pid, callback_runner)
         
@@ -45,7 +46,7 @@ class Batch(object):
                 self.__error_parser (err.read())
               
             if mseconds > 0:
-                self.__timeout_remover (timeout_id)          
+                GObject.source_remove (timeout_id)          
               
         GObject.child_watch_add (pid, callback_parser)
     
@@ -71,12 +72,6 @@ class Batch(object):
             self.log.warning ("command '{}' is taking too long, killed it".format(self.cmd[0]))
         finally:
             return False
-
-    def __timeout_remover (self, source_id):        
-        if not GObject.source_remove (source_id):
-            '''Timeout was reached so there is not source_id yet'''
-            pass
-            # print "I'm not able to remove the error above :)"            
     
     def __run_spawn_async (self):
         return GObject.spawn_async (argv = self.cmd,

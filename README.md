@@ -24,7 +24,6 @@ Dependecies
 * [Tor](https://www.torproject.org/) to surf anonymously
 * [Bleachbit](http://bleachbit.sourceforge.net/) to clean your system
 * [GNU Macchanger](http://www.gnu.org/software/macchanger/) to change your physical address
-* [Python Netifaces](https://pypi.python.org/pypi/netiface) to build this application
 ```sh
 sudo apt-get install tor bleachbit macchanger python-netifaces
 ```

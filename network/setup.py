@@ -1,6 +1,5 @@
 '''Set up the network config files'''
 from __future__ import print_function
-import netifaces as NI
 import ConfigParser
 import shutil
 import sys
@@ -8,13 +7,17 @@ import os
 
 # Thanks to ssokolow from http://stackoverflow.com/questions/2761829
 def get_default_gateway_linux():
-    with open("/proc/net/route") as fh:
+    with open('/proc/net/route') as fh:
         for line in fh:
             fields = line.strip().split()
             if fields[1] != '00000000' or not int(fields[3], 16) & 2:
                 continue
 
             return fields[0]
+
+def get_interfaces_linux(blacklist):
+    blacklisting = lambda iface: filter(lambda b: b == iface, blacklist) == []
+    return filter(blacklisting, os.listdir('/sys/class/net'))
 
 config = ConfigParser.SafeConfigParser()
 default_gw = get_default_gateway_linux()
@@ -25,7 +28,7 @@ def create_interfaces_configurator():
         os.remove('network/{}'.format(fname))
 
     '''Do not consider "lo" interface and interface without physical addr (virtual)'''
-    for iface in filter (lambda i: i != "lo" and NI.AF_LINK in NI.ifaddresses(i), NI.interfaces()):
+    for iface in get_interfaces_linux(['lo']):
         fname = 'network/network-{}.cfg'.format(iface)
         shutil.copyfile('network/network.cfg', fname)
 

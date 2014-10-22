@@ -3,6 +3,7 @@
 __author__ = 'Antonio De Rosa'
 
 import os
+import sys
 import ConfigParser
 from gi.repository import Gtk
 
@@ -10,7 +11,6 @@ import gui
 import gui.mwidget
 import util.setup
 import util.wrapper
-from util import __version__, __python_version__, __gtk_version__, __license__
 
 class BBA(gui.GUI):
     '''Main Class'''
@@ -70,10 +70,12 @@ class BBA(gui.GUI):
                                     Gtk.ButtonsType.OK,
                                     "BackBox Anonymizer")
 
-        text = [__version__,
-                __python_version__,
-                __gtk_version__,
-                __license__]
+        text = ["Version 1.0 RC1",
+                "Python v" + ".".join (map (str, sys.version_info[:3])),
+                "GTK v{}.{}.{}".format (Gtk.get_major_version(),
+                                        Gtk.get_minor_version(),
+                                        Gtk.get_micro_version()),'',
+                "GNU GPL version 2"]
         
         dialog.format_secondary_text("\n".join(text))
         

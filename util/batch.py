@@ -14,9 +14,8 @@ class Batch(object):
         assert hasattr (callback, '__call__')
         self.callback = callback
 
-    def set_cmd (self, cmd, should_be_root=True):
-        assert isinstance (should_be_root, bool)
-        self.cmd = shlex.split ('gksudo "{}"'.format(cmd) if os.geteuid() != 0 and should_be_root else cmd)
+    def set_cmd (self, cmd):
+        self.cmd = shlex.split (cmd)
 
     def run (self, mseconds = 0):
         assert hasattr (self, 'cmd') and hasattr (self, 'callback') and hasattr (self, 'writer')        

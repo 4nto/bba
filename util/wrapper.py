@@ -39,7 +39,7 @@ class Wrapper(Batch):
                 self.output('Module "{}" disabled due to misconfiguration\n'.format(self.name))
                 enabling_widget(False)
             
-        self.set_cmd(self.config.get('cmd', 'init'), should_be_root = False)
+        self.set_cmd(self.config.get('cmd', 'init'))
         self.set_callback(callback_verify_script)
         self.ipc_pipe_based(self.config.getint('config', 'timeout'))
         
@@ -56,7 +56,7 @@ class Wrapper(Batch):
             self.output(stdout)
             callback(True if exit_code == 0 else False)
             
-        self.set_cmd(self.config.get('cmd', 'check'), should_be_root = False)
+        self.set_cmd(self.config.get('cmd', 'check'))
         self.set_callback(parser)
         self.ipc_pipe_based(self.config.getint('config', 'timeout'))
     '''

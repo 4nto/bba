@@ -41,7 +41,7 @@ def configure_module(module, load_widget_module, log):
             else:
                 log.error("Error setting up the module: {}".format(stdout))
                 
-        setup.set_cmd(cmd, should_be_root = False)                    
+        setup.set_cmd(cmd)                    
         setup.set_callback(setup_callback)
         setup.ipc_pipe_based(mconfig.getint('config', 'timeout'))
 

@@ -2,6 +2,7 @@
 '''Main file'''
 __author__ = 'Antonio De Rosa'
 
+import os
 import ConfigParser
 from gi.repository import Gtk
 
@@ -27,6 +28,9 @@ class BBA(gui.GUI):
         self.box2 = self.get_object("box2")        
         self.w_tv = lambda text: self.tv.get_buffer().insert\
                    (self.tv.get_buffer().get_end_iter(), text)
+
+        if os.getuid() == 0:
+            self.get_object("warning").hide()
         
         def load_widget_module(name, conf):
             '''Create a single module/widget'''

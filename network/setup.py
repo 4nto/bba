@@ -1,6 +1,7 @@
 '''Set up the network config files'''
 from __future__ import print_function
 import ConfigParser
+import subprocess
 import shutil
 import sys
 import os
@@ -23,9 +24,8 @@ def get_interfaces_linux():
     is_physical = lambda i: os.path.isdir('/sys/class/net/{}/device'.format(i))
     return filter(is_physical, os.listdir('/sys/class/net'))
 
-
+command_exist = lambda fpath: os.path.isfile(fpath) and os.access(fpath, os.X_OK)
 config = ConfigParser.SafeConfigParser()
-default_gw = get_default_gateway_linux()
 
 def create_interfaces_configurator():
     '''Remove last created files'''
@@ -39,7 +39,7 @@ def create_interfaces_configurator():
 
         config.read(fname)    
         config.set('DEFAULT', 'interface', iface)    
-        if iface == default_gw:
+        if iface == get_default_gateway_linux():
             config.set('DEFAULT', 'default_gw', '(default)')
             config.set('config', 'hide', str(False))
             
@@ -49,8 +49,19 @@ def create_interfaces_configurator():
         yield fname
 
 try:
+    if os.getuid() == 0 and command_exist('/usr/sbin/virt-what'):
+        proc = subprocess.Popen('/usr/sbin/virt-what',
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        
+        (stdout, stderr) = proc.communicate()
+
+        if stdout != '' or stderr != '':
+            print("Unable to change MAC addr on virtualized systems: {}"\
+                  .format(stdout))
+            sys.exit(1)
+        
     map(print, create_interfaces_configurator())
 except Exception as inst:
-    print("Unable to set up network interfaces")
     print("Unable to set up network interfaces: {}".format(inst), sys.stderr)
     sys.exit(1)

@@ -147,6 +147,24 @@
           </packing>
         </child>
         <child>
+          <object class="GtkLabel" id="warning">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="halign">center</property>
+            <property name="xpad">5</property>
+            <property name="label" translatable="yes">BBA not running as root, you cannot perform operations</property>
+            <attributes>
+              <attribute name="font-desc" value="Sans 10"/>
+              <attribute name="foreground" value="#f16d22732273"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkExpander" id="expander">
             <property name="can_focus">True</property>
             <child>
@@ -172,7 +190,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">3</property>
+            <property name="position">4</property>
           </packing>
         </child>
         <child>
@@ -205,25 +223,8 @@
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="position">4</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="warning">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="yalign">0.44999998807907104</property>
-            <property name="label" translatable="yes">BBA not running as root, you cannot perform operations</property>
-            <property name="justify">right</property>
-            <attributes>
-              <attribute name="foreground" value="#f16d22732273"/>
-            </attributes>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
             <property name="pack_type">end</property>
-            <property name="position">6</property>
+            <property name="position">5</property>
           </packing>
         </child>
       </object>

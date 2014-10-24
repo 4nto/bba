@@ -73,7 +73,7 @@ class PanedWidget(Gtk.Paned):
             
         def enable_widget_button(sensitive):
             def check_callback(is_already):
-                self.control.set_sensitive(is_already)
+                self.control.set_sensitive(True)
                 
             self.label.set_sensitive(True)
             self.wrapper.check(check_callback)

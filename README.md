@@ -25,6 +25,6 @@ Dependecies
 * [Bleachbit](http://bleachbit.sourceforge.net/) to clean your system
 * [GNU Macchanger](http://www.gnu.org/software/macchanger/) to change your physical address
 ```sh
-sudo apt-get install tor bleachbit macchanger python-netifaces
+sudo apt-get install tor bleachbit macchanger 
 ```
 

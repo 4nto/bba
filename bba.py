@@ -5,6 +5,11 @@ __author__ = 'Antonio De Rosa'
 import os
 import sys
 import ConfigParser
+
+# to avoid unity MENUPROXY hide the menubar
+if 'UBUNTU_MENUPROXY' in os.environ:
+    os.environ['UBUNTU_MENUPROXY'] = "0"
+
 from gi.repository import Gtk
 
 import gui 

@@ -26,10 +26,20 @@ try:
     config.set('cmd', 'hostname', lookup('/var/log/kern.log'))
     with open(cfg, 'wb') as fd:
         config.write(fd)
+        
     print(cfg)
 except KeyboardInterrupt:
     print("SIGINT received (timeout or CTRL+C)", file=sys.stderr)
     sys.exit(1) 
 except Exception as inst:
-    print("Unknown_error: {}".format(inst), file=sys.stderr)
-    sys.exit(1)
+    '''
+    It was unable to find the last boot hostname and if there is no
+    already present last boot name in the cfg file then raise the error
+    '''
+    if not config.has_option('cmd', 'hostname'):
+        print("Unknown_error: {}".format(inst), file=sys.stderr)
+        sys.exit(1)
+    
+    print(cfg) 
+        
+    

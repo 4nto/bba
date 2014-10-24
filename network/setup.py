@@ -14,10 +14,15 @@ def get_default_gateway_linux():
                 continue
 
             return fields[0]
-
+'''
 def get_interfaces_linux(blacklist):
     blacklisting = lambda iface: filter(lambda b: b == iface, blacklist) == []
     return filter(blacklisting, os.listdir('/sys/class/net'))
+'''
+def get_interfaces_linux():
+    is_physical = lambda i: os.path.isdir('/sys/class/net/{}/device'.format(i))
+    return filter(is_physical, os.listdir('/sys/class/net'))
+
 
 config = ConfigParser.SafeConfigParser()
 default_gw = get_default_gateway_linux()
@@ -28,7 +33,7 @@ def create_interfaces_configurator():
         os.remove('network/{}'.format(fname))
 
     '''Do not consider "lo" interface and interface without physical addr (virtual)'''
-    for iface in get_interfaces_linux(['lo']):
+    for iface in get_interfaces_linux():
         fname = 'network/network-{}.cfg'.format(iface)
         shutil.copyfile('network/network.cfg', fname)
 

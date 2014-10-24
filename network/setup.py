@@ -24,10 +24,23 @@ def get_interfaces_linux():
     is_physical = lambda i: os.path.isdir('/sys/class/net/{}/device'.format(i))
     return filter(is_physical, os.listdir('/sys/class/net'))
 
-command_exist = lambda fpath: os.path.isfile(fpath) and os.access(fpath, os.X_OK)
-config = ConfigParser.SafeConfigParser()
+def check_virtualization():
+    command_exist = lambda fpath: os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+    if os.getuid() == 0 and command_exist('/usr/sbin/virt-what'):
+        proc = subprocess.Popen('/usr/sbin/virt-what',
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE)
+        
+        (stdout, stderr) = proc.communicate()
+        
+        if stdout != '' or stderr != '':
+            return True
+
+    return False
 
 def create_interfaces_configurator():
+    config = ConfigParser.SafeConfigParser()
+    
     '''Remove last created files'''
     for fname in filter (lambda fname: 'network-' in fname, os.listdir('network')):
         os.remove('network/{}'.format(fname))
@@ -49,17 +62,9 @@ def create_interfaces_configurator():
         yield fname
 
 try:
-    if os.getuid() == 0 and command_exist('/usr/sbin/virt-what'):
-        proc = subprocess.Popen('/usr/sbin/virt-what',
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE)
-        
-        (stdout, stderr) = proc.communicate()
-
-        if stdout != '' or stderr != '':
-            print("Unable to change MAC addr on virtualized systems: {}"\
-                  .format(stdout))
-            sys.exit(1)
+    if check_virtualization():    
+        print("Unable to change MAC addr on virtualized systems: {}".format(stdout))
+        sys.exit(1)
         
     map(print, create_interfaces_configurator())
 except Exception as inst:

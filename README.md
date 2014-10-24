@@ -24,7 +24,8 @@ Dependecies
 * [Tor](https://www.torproject.org/) to surf anonymously
 * [Bleachbit](http://bleachbit.sourceforge.net/) to clean your system
 * [GNU Macchanger](http://www.gnu.org/software/macchanger/) to change your physical address
+* [virt-what](http://people.redhat.com/~rjones/virt-what/) (optional) to detect if you are running on virtualized environment
 ```sh
-sudo apt-get install tor bleachbit macchanger 
+sudo apt-get install tor bleachbit macchanger virt-what 
 ```
 

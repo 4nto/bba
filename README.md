@@ -11,7 +11,7 @@ BBA works on Linux and is developed in Python with GTK+3, it is based on backbox
 ![GTK](http://img.shields.io/badge/GUI-GTK-yellow.svg)&nbsp; 
 ![Python](http://img.shields.io/badge/Language-Python-green.svg)&nbsp; 
 ![License](http://img.shields.io/badge/License-GNU_GPL_2.0-red.svg)&nbsp; 
-![version RC0](http://img.shields.io/badge/Version-RC0-lightgrey.svg)&nbsp; 
+![version RC5](http://img.shields.io/badge/Version-RC0-lightgrey.svg)&nbsp; 
 
 Run
 --------------

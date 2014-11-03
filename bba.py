@@ -75,7 +75,7 @@ class BBA(gui.GUI):
                                     Gtk.ButtonsType.OK,
                                     "BackBox Anonymizer")
 
-        text = ["Version 1.0 RC1",
+        text = ["Version 1.0 RC5",
                 "Python v" + ".".join (map (str, sys.version_info[:3])),
                 "GTK v{}.{}.{}".format (Gtk.get_major_version(),
                                         Gtk.get_minor_version(),

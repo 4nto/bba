@@ -3,7 +3,7 @@ from gi.repository import Gtk
 class PanedWidget(Gtk.Paned):
     def __init__(self, wrapper, button = False):
         '''Create the combination switch/label or button/label in the paned'''
-        Gtk.Paned.__init__(self)
+        super(PanedWidget, self).__init__()
         self.wrapper = wrapper
         self.button = button
         

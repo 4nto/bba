@@ -4,7 +4,7 @@ import ConfigParser
 import sys
 import os
 
-cfg = 'hostname/hostname.cfg'
+cfg = 'modules/hostname/hostname.cfg'
 
 def lookup(fname, cnt = 0):    
     '''Find the last boot hostname'''

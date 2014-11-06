@@ -45,7 +45,7 @@ def configure_module(module, load_widget_module, log):
         setup.set_callback(setup_callback)
         setup.ipc_pipe_based(mconfig.getint('config', 'timeout'))
 
-    default_cfg_file = "{0}/{0}.cfg".format(module)
+    default_cfg_file = "modules/{0}/{0}.cfg".format(module)
     
     if os.path.isfile(default_cfg_file):        
         mconfig.read(default_cfg_file)

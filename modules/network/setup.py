@@ -42,13 +42,13 @@ def create_interfaces_configurator():
     config = ConfigParser.SafeConfigParser()
     
     '''Remove last created files'''
-    for fname in filter (lambda fname: 'network-' in fname, os.listdir('network')):
-        os.remove('network/{}'.format(fname))
+    for fname in filter (lambda fname: 'network-' in fname, os.listdir('modules/network')):
+        os.remove('modules/network/{}'.format(fname))
 
     '''Do not consider "lo" interface and interface without physical addr (virtual)'''
     for iface in get_interfaces_linux():
-        fname = 'network/network-{}.cfg'.format(iface)
-        shutil.copyfile('network/network.cfg', fname)
+        fname = 'modules/network/network-{}.cfg'.format(iface)
+        shutil.copyfile('modules/network/network.cfg', fname)
 
         config.read(fname)    
         config.set('DEFAULT', 'interface', iface)    

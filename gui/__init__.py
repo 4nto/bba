@@ -4,7 +4,7 @@ from gi.repository import Gtk, Gdk
 
 class GUI(Gtk.Builder):
     def __init__(self, glade_file, log_file, css_file):
-        Gtk.Builder.__init__(self)
+        super(GUI, self).__init__()
         self.add_from_file(glade_file)
         self.connect_signals(self)
 
@@ -34,15 +34,3 @@ class GUI(Gtk.Builder):
 
     def on_window_delete_event(self, *args):
         Gtk.main_quit(*args)
-
-class WrappedFileChooserDialog(Gtk.FileChooserDialog):
-    def __init__(self, *args):
-        Gtk.FileChooserDialog.__init__(self, *args)
-        self.set_current_folder(os.path.dirname(os.path.abspath(__file__)))
-        
-    def __enter__(self):
-        return {'response': self.run(), 'dialog': self}
-    
-    def __exit__(self, *args):
-        self.destroy()
-

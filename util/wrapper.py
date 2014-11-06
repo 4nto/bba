@@ -6,7 +6,7 @@ class Wrapper(Batch):
         '''Wrapper class constructor'''
         self.name = name
         self.log = log.getChild(self.name)
-        Batch.__init__(self, self.log)
+        super(Wrapper, self).__init__(self.log)
         self.set_writer(output)
         self.config = config
         self.output = output

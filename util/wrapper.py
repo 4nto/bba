@@ -43,7 +43,8 @@ class Wrapper(Batch):
             if exit_code == 0:
                 enabling_widget(True)                        
             else:
-                self.output('Module "{}" disabled due to misconfiguration\n'.format(self.name))
+                self.output('Module "{}" disabled: {}\n'.format(self.name,
+                                                                stdout.strip()))
                 enabling_widget(False)
 
         cmd = self.cwd(self.config.get('cmd', 'init'))

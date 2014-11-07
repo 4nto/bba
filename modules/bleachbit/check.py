@@ -1,18 +1,14 @@
+#!/usr/bin/env python
 '''Get how many files bleachbit will remove'''
 from __future__ import print_function
+import ConfigParser
 import subprocess
 import signal
 import shlex
 import sys
 import os
 
-bleachbit = '/usr/bin/bleachbit'
 patterns = ['Files to be deleted:', 'File da eliminare:']
-
-if len(sys.argv) < 2:
-    print("Unable to verify your data")     
-    print("Bad use of the command", file=sys.stderr)
-    sys.exit(2)
 
 def check(proc):
     (output, error) = proc.communicate()
@@ -34,13 +30,20 @@ def check(proc):
     print("Your system is clean")
 
 try:
-    cmd = "{} -p -c {}".format(bleachbit, " ".join(sys.argv[1:]))
+    os.chdir(os.path.dirname(__file__))
+    config = ConfigParser.SafeConfigParser(allow_no_value = True)    
+    config.read('bleachbit.cfg')
+    bleachbit = config.get('DEFAULT', 'bleachbit')
+    cleaners = config.get('DEFAULT', 'cleaners')    
+    cmd = "{} -p -c {}".format(bleachbit, cleaners)
     proc = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     check(proc)
+    
 except KeyboardInterrupt:
     print("SIGINT received (timeout or CTRL+C)", file=sys.stderr)
     print("Unable to verify your data")
     sys.exit(2)
+    
 except Exception as inst:
     print("Unable to verify your data")
     print("Unknown_error: {}".format(inst), file=sys.stderr)    

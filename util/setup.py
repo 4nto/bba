@@ -28,6 +28,7 @@ def configure_module(module, load_widget_module, log):
     log = log.getChild(module)
     setup = util.batch.Batch(log)      
     mconfig = ConfigParser.SafeConfigParser(allow_no_value = True)
+    default_cfg_file = "modules/{0}/{0}.cfg".format(module)
     
     def run_setup_script(cmd):
         '''Run in background the setup script'''
@@ -43,29 +44,30 @@ def configure_module(module, load_widget_module, log):
                 
         setup.set_cmd(cmd)                    
         setup.set_callback(setup_callback)
-        setup.ipc_pipe_based(mconfig.getint('config', 'timeout'))
-
-    default_cfg_file = "modules/{0}/{0}.cfg".format(module)
+        setup.ipc_pipe_based(mconfig.getint('config', 'timeout'))    
     
-    if os.path.isfile(default_cfg_file):        
-        mconfig.read(default_cfg_file)
-
-        '''(2) Config file syntax check'''
-        if not check_config(mconfig):
-            log.error("Wrong configuration file")
-            return
-        
-        '''(3) Config file dependencies'''
-        if mconfig.has_option('config', 'assert') and not \
-           check_dependences(mconfig.get('config', 'assert')):
-            log.error("Unable to load module due to missing dependences")                                
-            return
-
-        '''(4,5) Run the setup script or load from the default config file'''
-        if mconfig.has_option('config', 'setup'):                                    
-            run_setup_script(mconfig.get('config', 'setup'))
-        else:
-            log.warning("No setup for module")
-            load_widget_module(module, mconfig) 
-    else:
+    if not os.path.isfile(default_cfg_file):
         log.error("No configuration file")
+        return
+    
+    mconfig.read(default_cfg_file)
+
+    '''(2) Config file syntax check'''
+    if not check_config(mconfig):
+        log.error("Wrong configuration file")
+        return
+    
+    '''(3) Config file dependencies'''
+    if mconfig.has_option('config', 'assert') and not \
+       check_dependences(mconfig.get('config', 'assert')):
+        log.error("Unable to load module due to missing dependences")                                
+        return
+
+    '''(4,5) Run the setup script or load from the default config file'''
+    if mconfig.has_option('config', 'setup'):
+        cmd = './modules/{}/{}'.format(module, mconfig.get('config', 'setup'))
+        run_setup_script(cmd)
+    else:
+        log.warning("No setup for module")
+        load_widget_module(module, mconfig) 
+        

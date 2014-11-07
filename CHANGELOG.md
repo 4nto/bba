@@ -1,2 +1,0 @@
-<li> Beta 4 <a href="http://github.com/4nto/bba/commit/fd6176889a854c3bbc3286eea52eeb7f0dac8e14"><br /> view commit</a></li> 
-

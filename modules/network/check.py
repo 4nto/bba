@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 '''Check the current mac addr'''
 from __future__ import print_function
 import subprocess

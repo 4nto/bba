@@ -1,8 +1,8 @@
+#!/usr/bin/env python
 '''Set up the network config files'''
 from __future__ import print_function
 import ConfigParser
-import subprocess
-import shutil
+import tempfile
 import sys
 import os
 
@@ -15,58 +15,33 @@ def get_default_gateway_linux():
                 continue
 
             return fields[0]
-'''
-def get_interfaces_linux(blacklist):
-    blacklisting = lambda iface: filter(lambda b: b == iface, blacklist) == []
-    return filter(blacklisting, os.listdir('/sys/class/net'))
-'''
+
 def get_interfaces_linux():
     is_physical = lambda i: os.path.isdir('/sys/class/net/{}/device'.format(i))
     return filter(is_physical, os.listdir('/sys/class/net'))
 
-def check_virtualization():
-    command_exist = lambda fpath: os.path.isfile(fpath) and os.access(fpath, os.X_OK)
-    if os.getuid() == 0 and command_exist('/usr/sbin/virt-what'):
-        proc = subprocess.Popen('/usr/sbin/virt-what',
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE)
-        
-        (stdout, stderr) = proc.communicate()
-        
-        if stdout != '' or stderr != '':
-            return True
-
-    return False
-
-def create_interfaces_configurator():
+def create_interfaces_configurator(module):
     config = ConfigParser.SafeConfigParser()
-    
-    '''Remove last created files'''
-    for fname in filter (lambda fname: 'network-' in fname, os.listdir('modules/network')):
-        os.remove('modules/network/{}'.format(fname))
-
-    '''Do not consider "lo" interface and interface without physical addr (virtual)'''
     for iface in get_interfaces_linux():
-        fname = 'modules/network/network-{}.cfg'.format(iface)
-        shutil.copyfile('modules/network/network.cfg', fname)
-
-        config.read(fname)    
-        config.set('DEFAULT', 'interface', iface)    
+        config.read('{}.cfg'.format(module))
+        config.set('DEFAULT', 'interface', iface)
+        
         if iface == get_default_gateway_linux():
             config.set('DEFAULT', 'default_gw', '(default)')
             config.set('config', 'hide', str(False))
             
-        with open(fname, 'wb') as f:
-            config.write(f)
+        with tempfile.NamedTemporaryFile(prefix = module, delete = False) as fd:
+            config.write(fd)
 
-        yield fname
+        yield fd.name
 
-try:
-    if check_virtualization():    
-        print("Unable to change MAC addr on virtualized systems: {}".format(stdout))
-        sys.exit(1)
-        
-    map(print, create_interfaces_configurator())
+def setup(module):
+    map(print, create_interfaces_configurator(module))
+    
+try:    
+    os.chdir(os.path.dirname(__file__))
+    setup(os.path.abspath(__file__).split('/')[-2])
+    
 except Exception as inst:
     print("Unable to set up network interfaces: {}".format(inst), sys.stderr)
     sys.exit(1)

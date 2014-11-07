@@ -15,7 +15,8 @@ class PanedWidget(Gtk.Paned):
         if button:
             self.control = Gtk.Button()
             image = Gtk.Image()
-            image.set_from_file(wrapper.config.get('config', 'button'))
+            image.set_from_file(wrapper.cwd(wrapper.config.get('config',
+                                                               'button')))
             self.control.add(image)
         else:
             self.control = Gtk.Switch()
@@ -69,7 +70,7 @@ class PanedWidget(Gtk.Paned):
                 self.control.set_sensitive(sensitive)
                 
             self.label.set_sensitive(True)
-            self.wrapper.check(check_callback)                            
+            self.wrapper.check(check_callback)
             
         def enable_widget_button(sensitive):
             def check_callback(is_already):

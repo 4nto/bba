@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 '''Verify if Tor is up and properly configured'''
 from __future__ import print_function
 import sys
@@ -31,10 +32,12 @@ def verify():
 
 try:
     verify()
+    
 except KeyboardInterrupt:
     print("Unable to verify module configuration\n")
     print("SIGINT received (timeout or CTRL+C)", file=sys.stderr)
     sys.exit(1)
+    
 except Exception as inst:
     print("Unable to verify module configuration\n")
     print("Unknown error during verification: {}\n".format(inst), file=sys.stderr)

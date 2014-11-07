@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 '''Get from the torproject webpage if you are using Tor'''
 
 from __future__ import print_function

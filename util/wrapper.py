@@ -6,10 +6,17 @@ class Wrapper(Batch):
         '''Wrapper class constructor'''
         self.name = name
         self.log = log.getChild(self.name)
-        super(Wrapper, self).__init__(self.log)
-        self.set_writer(output)
         self.config = config
         self.output = output
+        
+        super(Wrapper, self).__init__(self.log)        
+        self.set_writer(output)
+        
+        self.cwd = lambda cmd: './modules/{}/{}'.format(name, cmd)        
+        self.start_cmd = self.cwd(self.config.get('cmd', 'start'))
+        self.stop_cmd = self.cwd(self.config.get('cmd', 'stop'))
+        self.check_cmd = self.cwd(self.config.get('cmd', 'check'))
+        self.timeout = self.config.getint('config', 'timeout')
         
     '''
     VERIFY STEP
@@ -38,10 +45,11 @@ class Wrapper(Batch):
             else:
                 self.output('Module "{}" disabled due to misconfiguration\n'.format(self.name))
                 enabling_widget(False)
-            
-        self.set_cmd(self.config.get('cmd', 'init'))
+
+        cmd = self.cwd(self.config.get('cmd', 'init'))
+        self.set_cmd(cmd)
         self.set_callback(callback_verify_script)
-        self.ipc_pipe_based(self.config.getint('config', 'timeout'))
+        self.ipc_pipe_based(self.timeout)
         
     '''
     CHECK STEP
@@ -56,9 +64,9 @@ class Wrapper(Batch):
             self.output(stdout)
             callback(True if exit_code == 0 else False)
             
-        self.set_cmd(self.config.get('cmd', 'check'))
+        self.set_cmd(self.check_cmd)
         self.set_callback(parser)
-        self.ipc_pipe_based(self.config.getint('config', 'timeout'))
+        self.ipc_pipe_based(self.timeout)
     '''
     START/STOP STEP
     (1) Run in a separate process the start/stop script
@@ -67,10 +75,10 @@ class Wrapper(Batch):
     '''
     def start (self, callback):
         self.set_callback(callback)
-        self.set_cmd(self.config.get('cmd', 'start'))
-        self.run(self.config.getint('config', 'timeout'))
+        self.set_cmd(self.start_cmd)
+        self.run(self.timeout)
 
     def stop (self, callback):
         self.set_callback(callback)
-        self.set_cmd(self.config.get('cmd', 'stop'))
-        self.run(self.config.getint('config', 'timeout'))
+        self.set_cmd(self.stop_cmd)
+        self.run(self.timeout)

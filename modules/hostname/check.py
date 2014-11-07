@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 '''Check the passed argument hostname with the current hostname'''
 from __future__ import print_function
 import socket
@@ -18,10 +19,12 @@ def check(hostname):
 
 try:
     check(sys.argv[1])
+    
 except KeyboardInterrupt:
     print("SIGINT received (timeout or CTRL+C)", file=sys.stderr)
     print("Unable to retrieve your last boot hostname")
     sys.exit(2)
+    
 except Exception as inst:
     print("Unknown_error: {}".format(inst), file=sys.stderr)
     print("Unable to retrieve your last boot hostname")

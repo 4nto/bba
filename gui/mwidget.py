@@ -34,14 +34,17 @@ class PanedWidget(Gtk.Paned):
         self.show_all()
 
     def connect_wrapper(self):
-        '''Connect widget signals to the functions managed by the wrapper'''                    
-        def connect_wrapper_switch(widget, *args):
-            def check_callback(is_already):
+        '''Connect widget signals to the functions managed by the wrapper'''
+        def check_callback_switch(is_already):
                 self.control.set_active(is_already)
                 self.control.set_sensitive(True)
-                
+
+        def check_callback_button(is_already):
+            self.control.set_sensitive(True)
+            
+        def connect_wrapper_switch(widget, *args):                
             def callback(*args):            
-                self.wrapper.check(check_callback)
+                self.wrapper.check(check_callback_switch)
                 
             widget.set_sensitive(False)
             if widget.get_active():
@@ -49,12 +52,9 @@ class PanedWidget(Gtk.Paned):
             else:
                 self.wrapper.start(callback)                                               
                     
-        def connect_wrapper_button(widget, *args):
-            def check_callback(is_already):
-                self.control.set_sensitive(is_already)
-                
+        def connect_wrapper_button(widget, *args):                
             def callback(*args):            
-                self.wrapper.check(check_callback)
+                self.wrapper.check(check_callback_button)
                 
             widget.set_sensitive(False)
             self.wrapper.start(callback)                                                           
@@ -62,26 +62,19 @@ class PanedWidget(Gtk.Paned):
         self.control.connect('button-press-event', connect_wrapper_button\
                              if self.button else connect_wrapper_switch)
 
-    def verify_and_enable(self):
-        '''Makes enable the widget'''                
-        def enable_widget_switch(sensitive):
-            def check_callback(is_already):
-                self.control.set_active(is_already)
-                self.control.set_sensitive(sensitive)
-                
-            self.label.set_sensitive(True)
-            self.wrapper.check(check_callback)
-            
-        def enable_widget_button(sensitive):
-            def check_callback(is_already):
-                self.control.set_sensitive(True)
-                
-            self.label.set_sensitive(True)
-            self.wrapper.check(check_callback)
+        self.wrapper.check(check_callback_button if self.button else\
+                           check_callback_switch)
 
-        if self.button:
-            self.wrapper.verify(enable_widget_button)
-        else:
-            self.wrapper.verify(enable_widget_switch)
+    def  verify_and_connect(self):
+        def enable_and_connect(enabled):
+            self.label.set_sensitive(enabled)
+            self.control.set_sensitive(enabled)
+            
+            if enabled:        
+                self.connect_wrapper()
+            else:
+                self.wrapper.check(lambda b: None)
+
+        self.wrapper.verify(enable_and_connect)
             
 

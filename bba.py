@@ -53,8 +53,7 @@ class BBA(gui.GUI):
             if box2.get_children():
                 self.get_object("expander").show()
 
-            paned.connect_wrapper()                
-            paned.verify_and_enable()
+            paned.verify_and_connect()
 
         def load_module(module):
             def toggle_menu_module(item):

@@ -50,7 +50,6 @@ class PanedWidget(Gtk.Paned):
                 self.wrapper.start(callback)                                               
 
         def check_callback_button(is_already):            
-            print "Going to set sensitivity at {}".format(is_already)
             self.control.set_sensitive(is_already)
                     
         def connect_wrapper_button(widget, *args):                

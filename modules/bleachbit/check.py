@@ -23,11 +23,11 @@ def check(proc):
         print("Parsing error", file=sys.stderr)
         sys.exit(2)
         
-    if file_to_delete != '0':                
-        print("There are {} files to remove".format(file_to_delete))
+    if file_to_delete == 0:
+        print("Your system is clean")        
         sys.exit(1)
 
-    print("Your system is clean")
+    print("There are {} files to remove".format(file_to_delete))
 
 try:
     os.chdir(os.path.dirname(__file__))

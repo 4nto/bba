@@ -20,7 +20,7 @@ class PanedWidget(Gtk.Paned):
             self.control.add(image)
         else:
             self.control = Gtk.Switch()
-            self.control.set_active(False)
+            self.control.set_active(False)        
             
         self.control.set_size_request(72, 30)
         self.control.set_sensitive(False)
@@ -38,9 +38,6 @@ class PanedWidget(Gtk.Paned):
         def check_callback_switch(is_already):
                 self.control.set_active(is_already)
                 self.control.set_sensitive(True)
-
-        def check_callback_button(is_already):
-            self.control.set_sensitive(True)
             
         def connect_wrapper_switch(widget, *args):                
             def callback(*args):            
@@ -51,13 +48,17 @@ class PanedWidget(Gtk.Paned):
                 self.wrapper.stop(callback)
             else:
                 self.wrapper.start(callback)                                               
+
+        def check_callback_button(is_already):            
+            print "Going to set sensitivity at {}".format(is_already)
+            self.control.set_sensitive(is_already)
                     
         def connect_wrapper_button(widget, *args):                
             def callback(*args):            
                 self.wrapper.check(check_callback_button)
                 
             widget.set_sensitive(False)
-            self.wrapper.start(callback)                                                           
+            self.wrapper.start(callback)
             
         self.control.connect('button-press-event', connect_wrapper_button\
                              if self.button else connect_wrapper_switch)

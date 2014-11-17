@@ -7,8 +7,8 @@ import sys
 import ConfigParser
 
 # to avoid unity MENUPROXY hide the menubar
-#if 'UBUNTU_MENUPROXY' in os.environ:
-#    os.environ['UBUNTU_MENUPROXY'] = "0"
+if 'UBUNTU_MENUPROXY' in os.environ:
+    os.environ['UBUNTU_MENUPROXY'] = "0"
 
 from gi.repository import Gtk
 
@@ -118,7 +118,6 @@ class BBA(gui.GUI):
         '''Clear the textview'''
         self.tv.get_buffer().delete(self.tv.get_buffer().get_start_iter(),
                                     self.tv.get_buffer().get_end_iter())
-
     
 if __name__ == '__main__':
     instance = BBA('modules/bba.cfg')

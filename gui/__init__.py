@@ -1,4 +1,5 @@
 import logging
+import sys
 import os
 from gi.repository import Gtk, Gdk
 
@@ -45,9 +46,12 @@ class GUI(Gtk.Builder):
             
         dialog.run()
         dialog.hide()
-        '''
-        "Python v" + ".".join (map (str, sys.version_info[:3])),
-        "GTK v{}.{}.{}".format (Gtk.get_major_version(),
-                                        Gtk.get_minor_version(),
-                                        Gtk.get_micro_version()),'',
-        '''        
+
+    def on_menu_info_activate(self, dialog):
+        '''Show Info form'''
+        dialog.set_markup("Python v" + ".".join (map (str, sys.version_info[:3])))
+        dialog.format_secondary_markup("GTK v{}.{}.{}".format (Gtk.get_major_version(), Gtk.get_minor_version(), Gtk.get_micro_version()))
+        dialog.run()
+        dialog.hide()        
+
+        

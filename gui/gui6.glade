@@ -6,15 +6,17 @@
     <property name="border_width">5</property>
     <property name="type_hint">dialog</property>
     <property name="program_name">BackBox Anonymizer</property>
-    <property name="version">Version 1.0 RC6</property>
+    <property name="version">Version 1.0 RC11</property>
     <property name="comments" translatable="yes">This program tries to anonymize your web activities
 by mixing open-source software.
 
 Keeping your privacy safe is the intent of the author.</property>
     <property name="website">https://github.com/4nto/bba</property>
+    <property name="website_label" translatable="yes">BBA on github</property>
     <property name="license" translatable="yes">
 </property>
     <property name="authors">Antonio De Rosa</property>
+    <property name="logo">icon.png</property>
     <property name="license_type">gpl-2-0</property>
     <child internal-child="vbox">
       <object class="GtkBox" id="aboutdialog-vbox1">
@@ -104,14 +106,40 @@ Keeping your privacy safe is the intent of the author.</property>
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="xalign">0.40999999642372131</property>
     <property name="stock">gtk-save-as</property>
   </object>
   <object class="GtkImage" id="image2">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="yalign">0.49000000953674316</property>
     <property name="stock">gtk-clear</property>
+  </object>
+  <object class="GtkMessageDialog" id="infodialog">
+    <property name="can_focus">False</property>
+    <property name="border_width">5</property>
+    <property name="type_hint">dialog</property>
+    <property name="skip_taskbar_hint">True</property>
+    <child internal-child="vbox">
+      <object class="GtkBox" id="messagedialog-vbox1">
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child internal-child="action_area">
+          <object class="GtkButtonBox" id="messagedialog-action_area1">
+            <property name="can_focus">False</property>
+            <property name="layout_style">end</property>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+    </child>
   </object>
   <object class="GtkWindow" id="window">
     <property name="can_focus">False</property>
@@ -121,8 +149,8 @@ Keeping your privacy safe is the intent of the author.</property>
     <property name="vexpand">True</property>
     <property name="title" translatable="yes">BB Anonymizer</property>
     <property name="resizable">False</property>
+    <property name="icon">icon.png</property>
     <property name="gravity">north</property>
-    <property name="ubuntu_no_proxy">True</property>
     <signal name="delete-event" handler="on_window_delete_event" swapped="no"/>
     <child>
       <object class="GtkBox" id="box">
@@ -212,6 +240,17 @@ Keeping your privacy safe is the intent of the author.</property>
                   <object class="GtkMenu" id="menu3">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkImageMenuItem" id="menu_info">
+                        <property name="label">gtk-info</property>
+                        <property name="use_action_appearance">False</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">True</property>
+                        <signal name="activate" handler="on_menu_info_activate" object="infodialog" swapped="no"/>
+                      </object>
+                    </child>
                     <child>
                       <object class="GtkImageMenuItem" id="menu_about">
                         <property name="label">gtk-about</property>
@@ -383,34 +422,26 @@ Keeping your privacy safe is the intent of the author.</property>
           </packing>
         </child>
         <child>
-          <object class="GtkFixed" id="fixed1">
-            <property name="width_request">0</property>
-            <property name="height_request">0</property>
+          <object class="GtkScrolledWindow" id="scrolledwindow1">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="can_focus">True</property>
+            <property name="border_width">5</property>
+            <property name="shadow_type">in</property>
+            <property name="min_content_width">400</property>
+            <property name="min_content_height">200</property>
+            <signal name="size-allocate" handler="on_textview_sizeallocate_event" swapped="no"/>
             <child>
-              <object class="GtkScrolledWindow" id="scrolledwindow1">
-                <property name="width_request">400</property>
-                <property name="height_request">200</property>
+              <object class="GtkTextView" id="textview1">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="border_width">5</property>
-                <property name="shadow_type">in</property>
-                <signal name="size-allocate" handler="on_textview_sizeallocate_event" swapped="no"/>
-                <child>
-                  <object class="GtkTextView" id="textview1">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="editable">False</property>
-                    <property name="wrap_mode">word</property>
-                    <property name="cursor_visible">False</property>
-                  </object>
-                </child>
+                <property name="can_focus">True</property>
+                <property name="editable">False</property>
+                <property name="wrap_mode">word</property>
+                <property name="cursor_visible">False</property>
               </object>
             </child>
           </object>
           <packing>
-            <property name="expand">True</property>
+            <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">6</property>
           </packing>

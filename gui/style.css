@@ -1,9 +1,8 @@
 GtkScrolledWindow GtkTextView {
 	background-color: black;
 	color: white;
-	font-family: "Courier New", Courier, monospace;
-	font-weight: bold;
-	font-size: 8;
+ 	font-family: "DejaVu Sans Mono", monospace;	
+	font-size: 9;
 }
 
 GtkSwitch {

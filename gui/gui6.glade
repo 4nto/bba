@@ -288,6 +288,7 @@ Keeping your privacy safe is the intent of the author.</property>
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="padding">10</property>
+            <property name="pack_type">end</property>
             <property name="position">2</property>
           </packing>
         </child>
@@ -332,6 +333,7 @@ Keeping your privacy safe is the intent of the author.</property>
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="padding">10</property>
+            <property name="pack_type">end</property>
             <property name="position">3</property>
           </packing>
         </child>
@@ -409,7 +411,6 @@ Keeping your privacy safe is the intent of the author.</property>
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="pack_type">end</property>
             <property name="position">6</property>
           </packing>
         </child>

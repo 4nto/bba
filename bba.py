@@ -28,13 +28,13 @@ class BBA(gui.GUI):
                                   config.get('config', 'css'))
 
         self.config_fname = config_fname
-        tview = self.get_object("textview1")
         box1 = self.get_object("box1")
         box2 = self.get_object("box2")
         submenu_modules = self.get_object('submenu_modules')
-
-        self.w_tv = lambda text: tview.get_buffer().insert\
-                   (tview.get_buffer().get_end_iter(), text)
+        
+        self.tv = self.get_object("textview1")
+        self.w_tv = lambda text: self.tv.get_buffer().insert\
+                   (self.tv.get_buffer().get_end_iter(), text)
 
         modules = filter(lambda d: os.path.isdir('modules/' + d),
                          os.listdir('modules'))
@@ -43,13 +43,18 @@ class BBA(gui.GUI):
             self.get_object("warning").hide()
 
         def lock_operations(running):
+            '''Avoid the access to other start/stop operations'''
             getattr(self.get_object("info"), 'show' if running else 'hide')()
             box1.set_sensitive(not running)
             box2.set_sensitive(not running)            
 
         def load_module(module):
+            '''
+            Load a single module, if it is enabled creates the related widget
+            else shows only the menu item
+            '''
             def load_widget_module(name, conf):
-                '''Create a single module/widget'''
+                '''Create the internal logic of a module/widget'''
                 wrapper = util.wrapper.Wrapper(log = self.log,
                                                output = self.w_tv,
                                                config = conf,

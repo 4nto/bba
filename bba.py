@@ -7,8 +7,8 @@ import sys
 import ConfigParser
 
 # to avoid unity MENUPROXY hide the menubar
-if 'UBUNTU_MENUPROXY' in os.environ:
-    os.environ['UBUNTU_MENUPROXY'] = "0"
+#if 'UBUNTU_MENUPROXY' in os.environ:
+#    os.environ['UBUNTU_MENUPROXY'] = "0"
 
 from gi.repository import Gtk
 
@@ -100,16 +100,6 @@ class BBA(gui.GUI):
         adj = textview.get_vadjustment()
         adj.set_value(adj.get_upper() - adj.get_page_size())
 
-    def on_menu_about_activate(self, dialog):
-        '''Show About form'''
-        dialog.run()
-        dialog.hide()
-        '''
-        "Python v" + ".".join (map (str, sys.version_info[:3])),
-        "GTK v{}.{}.{}".format (Gtk.get_major_version(),
-                                        Gtk.get_minor_version(),
-                                        Gtk.get_micro_version()),'',
-        '''
     def on_menu_file_save_activate(self, dialog):
         '''Show File Save form'''
         response = dialog.run()

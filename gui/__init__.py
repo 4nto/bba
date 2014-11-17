@@ -34,3 +34,20 @@ class GUI(Gtk.Builder):
 
     def on_window_delete_event(self, *args):
         Gtk.main_quit(*args)
+        
+    def on_menu_about_activate(self, dialog):
+        '''Show About form'''
+        try:
+            with open('doc/LICENSE') as lfile:
+                dialog.set_license(lfile.read().replace('\x0c', ''))
+        except IOError:
+            dialog.set_license("License file is missing")
+            
+        dialog.run()
+        dialog.hide()
+        '''
+        "Python v" + ".".join (map (str, sys.version_info[:3])),
+        "GTK v{}.{}.{}".format (Gtk.get_major_version(),
+                                        Gtk.get_minor_version(),
+                                        Gtk.get_micro_version()),'',
+        '''        

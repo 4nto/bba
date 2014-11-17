@@ -33,17 +33,19 @@ class PanedWidget(Gtk.Paned):
         self.add2(self.label)
         self.show_all()
 
-    def connect_wrapper(self):
+    def connect_wrapper(self, lock):
         '''Connect widget signals to the functions managed by the wrapper'''
         def check_callback_switch(is_already):
                 self.control.set_active(is_already)
                 self.control.set_sensitive(True)
             
         def connect_wrapper_switch(widget, *args):                
-            def callback(*args):            
+            def callback(*args):
+                lock(False)
                 self.wrapper.check(check_callback_switch)
                 
             widget.set_sensitive(False)
+            lock(True)
             if widget.get_active():
                 self.wrapper.stop(callback)
             else:
@@ -53,10 +55,12 @@ class PanedWidget(Gtk.Paned):
             self.control.set_sensitive(is_already)
                     
         def connect_wrapper_button(widget, *args):                
-            def callback(*args):            
+            def callback(*args):
+                lock(False)
                 self.wrapper.check(check_callback_button)
                 
             widget.set_sensitive(False)
+            lock(True)
             self.wrapper.start(callback)
             
         self.control.connect('button-press-event', connect_wrapper_button\
@@ -65,13 +69,13 @@ class PanedWidget(Gtk.Paned):
         self.wrapper.check(check_callback_button if self.button else\
                            check_callback_switch)
 
-    def  verify_and_connect(self):
+    def  verify_and_connect(self, lock):
         def enable_and_connect(enabled):
             self.label.set_sensitive(enabled)
             self.control.set_sensitive(enabled)
             
             if enabled:        
-                self.connect_wrapper()
+                self.connect_wrapper(lock)
             else:
                 self.wrapper.check(lambda b: None)
 

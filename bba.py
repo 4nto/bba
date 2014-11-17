@@ -32,31 +32,43 @@ class BBA(gui.GUI):
         box1 = self.get_object("box1")
         box2 = self.get_object("box2")
         submenu_modules = self.get_object('submenu_modules')
-        
+
         self.w_tv = lambda text: tview.get_buffer().insert\
                    (tview.get_buffer().get_end_iter(), text)
-        
-        def load_widget_module(name, conf):
-            '''Create a single module/widget'''
-            wrapper = util.wrapper.Wrapper(log = self.log,
-                                           output = self.w_tv,
-                                           config = conf,
-                                           name = name)
-            
-            paned = gui.mwidget.PanedWidget(wrapper,
-                                            conf.has_option('config', 'button'))
-            
-            box = box2 if conf.getboolean('config', 'hide') else box1
-            
-            box.pack_start(paned, expand = False, fill = True, padding = 5)
-            
-            if box2.get_children():
-                self.get_object("expander").show()
 
-            paned.verify_and_connect()
+        modules = filter(lambda d: os.path.isdir('modules/' + d),
+                         os.listdir('modules'))
+
+        if os.getuid() == 0:
+            self.get_object("warning").hide()
+
+        def lock_operations(running):
+            getattr(self.get_object("info"), 'show' if running else 'hide')()
+            box1.set_sensitive(not running)
+            box2.set_sensitive(not running)            
 
         def load_module(module):
+            def load_widget_module(name, conf):
+                '''Create a single module/widget'''
+                wrapper = util.wrapper.Wrapper(log = self.log,
+                                               output = self.w_tv,
+                                               config = conf,
+                                               name = name)
+                
+                paned = gui.mwidget.PanedWidget(wrapper,
+                                                conf.has_option('config', 'button'))
+                
+                box = box2 if conf.getboolean('config', 'hide') else box1
+                
+                box.pack_start(paned, expand = False, fill = True, padding = 5)
+                
+                if box2.get_children():
+                    self.get_object("expander").show()
+
+                paned.verify_and_connect(lock_operations)
+            
             def toggle_menu_module(item):
+                '''Insert a module into the menu bar'''
                 config.set('modules', item.get_label(), str(item.get_active()))
                 self.w_tv("At the next start module {} will be {}\n"\
                           .format(item.get_label(), "enabled" \
@@ -75,15 +87,9 @@ class BBA(gui.GUI):
             submenu_modules.add(moduleItem)
             moduleItem.connect('toggled', toggle_menu_module)
             moduleItem.show()            
-
-        modules = filter(lambda d: os.path.isdir('modules/' + d),
-                         os.listdir('modules'))
         
-        map(load_module, modules)
-            
-        if os.getuid() == 0:
-            self.get_object("warning").hide()            
-                                                   
+        map(load_module, modules)        
+    
     def on_textview_sizeallocate_event(self, textview, *args):
         '''Provide autoscrolling for the textview'''
         adj = textview.get_vadjustment()

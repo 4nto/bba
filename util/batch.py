@@ -22,7 +22,7 @@ class Batch(object):
         pid, _, stdout, stderr = self.__run_spawn_async()        
         GObject.io_add_watch (stdout, GObject.IO_IN, self.writer)
         if mseconds > 0:
-            timeout_id = GObject.timeout_add (mseconds, self.__timeout, pid)
+            timeout_id = GObject.timeout_add (mseconds, self.kill, pid)
             
         def callback_runner (*args):
             self.callback()
@@ -32,12 +32,13 @@ class Batch(object):
                 GObject.source_remove (timeout_id)
         
         GObject.child_watch_add (pid, callback_runner)
+        return pid
         
     def ipc_pipe_based(self, mseconds = 0):
         assert hasattr (self, 'cmd') and hasattr (self, 'callback')        
         pid, _, stdout, stderr = self.__run_spawn_async()
         if mseconds > 0:
-            timeout_id = GObject.timeout_add (mseconds, self.__timeout, pid)        
+            timeout_id = GObject.timeout_add (mseconds, self.kill, pid)        
             
         def callback_parser (*args):
             with io.open(stdout) as out, io.open(stderr) as err:
@@ -61,14 +62,14 @@ class Batch(object):
 
         self.writer = wrapped_writer
 
-    def __timeout (self, pid):
+    def kill (self, pid):
         try:
             os.kill (pid, signal.SIGINT)
         except OSError:
             '''Already died'''
             pass
         else:
-            self.log.warning ("command '{}' is taking too long, killed it".format(self.cmd[0]))
+            self.log.warning ("'{}' killed".format(self.cmd[0]))
         finally:
             return False
     

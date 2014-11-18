@@ -10,7 +10,7 @@ import ConfigParser
 if 'UBUNTU_MENUPROXY' in os.environ:
     os.environ['UBUNTU_MENUPROXY'] = "0"
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GObject
 
 import gui 
 import gui.mwidget
@@ -28,25 +28,37 @@ class BBA(gui.GUI):
                                   config.get('config', 'css'))
 
         self.config_fname = config_fname
+        self.tv = self.get_object("textview1")
+        self.progressbar_step = 0
+        self.w_tv = lambda text: self.tv.get_buffer().insert\
+                   (self.tv.get_buffer().get_end_iter(), text)
+        
         box1 = self.get_object("box1")
         box2 = self.get_object("box2")
         submenu_modules = self.get_object('submenu_modules')
-        
-        self.tv = self.get_object("textview1")
-        self.w_tv = lambda text: self.tv.get_buffer().insert\
-                   (self.tv.get_buffer().get_end_iter(), text)
-
+        progressbar = self.get_object("progressbar")        
         modules = filter(lambda d: os.path.isdir('modules/' + d),
                          os.listdir('modules'))
+
+        def on_timeout(user_data):
+            progressbar.set_fraction(progressbar.get_fraction() + self.progressbar_step)
+            return True
+            
+        GObject.timeout_add(1000, on_timeout, None)
 
         if os.getuid() == 0:
             self.get_object("warning").hide()
 
-        def lock_operations(running):
+        def lock_operations(enable, module, timeout, halt):
             '''Avoid the access to other start/stop operations'''
-            getattr(self.get_object("info"), 'show' if running else 'hide')()
-            box1.set_sensitive(not running)
-            box2.set_sensitive(not running)            
+            progressbar.set_fraction(0)   
+            self.progressbar_step = 1000/float(timeout) if enable else 0
+            progressbar.set_text("Running {} module..".format(module))
+            getattr(self.get_object("info"), 'show' if enable else 'hide')()            
+            box1.set_sensitive(not enable)
+            box2.set_sensitive(not enable)
+            self.get_object('button_stop').connect('clicked', halt)
+            
 
         def load_module(module):
             '''

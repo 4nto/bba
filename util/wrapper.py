@@ -8,6 +8,7 @@ class Wrapper(Batch):
         self.log = log.getChild(self.name)
         self.config = config
         self.output = output
+        self.pid = None
         
         super(Wrapper, self).__init__(self.log)        
         self.set_writer(output)
@@ -77,9 +78,16 @@ class Wrapper(Batch):
     def start (self, callback):
         self.set_callback(callback)
         self.set_cmd(self.start_cmd)
-        self.run(self.timeout)
+        self.pid = self.run(self.timeout)
 
     def stop (self, callback):
         self.set_callback(callback)
         self.set_cmd(self.stop_cmd)
-        self.run(self.timeout)
+        self.pid = self.run(self.timeout)
+
+    '''
+    Kill a running process
+    '''
+    def halt(self, user_data):
+        if self.pid:
+            self.kill(self.pid)

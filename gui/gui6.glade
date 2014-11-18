@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <!-- interface-requires gtk+ 3.4 -->
-  <object class="GtkAboutDialog" id="aboutdialog1">
+  <object class="GtkAboutDialog" id="aboutdialog">
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
+    <property name="icon">icon.png</property>
     <property name="type_hint">dialog</property>
     <property name="program_name">BackBox Anonymizer</property>
     <property name="version">Version 1.0 RC11</property>
@@ -43,6 +44,7 @@ Keeping your privacy safe is the intent of the author.</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Choose or create a new file to save the console content</property>
     <property name="role">GtkFileChooserDialog</property>
+    <property name="icon">icon.png</property>
     <property name="type_hint">dialog</property>
     <property name="action">save</property>
     <child internal-child="vbox">
@@ -116,20 +118,25 @@ Keeping your privacy safe is the intent of the author.</property>
   <object class="GtkMessageDialog" id="infodialog">
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
+    <property name="title" translatable="yes">Information</property>
+    <property name="icon">icon.png</property>
     <property name="type_hint">dialog</property>
     <property name="skip_taskbar_hint">True</property>
+    <property name="buttons">ok</property>
+    <property name="use_markup">True</property>
+    <property name="secondary_text" translatable="yes">This application is developed in Python 2.7 so if you have lower versions or only Python 3 it could not work.
+
+The GUI uses GTK+3 and is tested it with versions 3.4 and 3.10, if it's not work please contact me or open an issue &lt;a href="https://github.com/4nto/bba/issues"&gt;here&lt;/a&gt;</property>
+    <property name="secondary_use_markup">True</property>
     <child internal-child="vbox">
-      <object class="GtkBox" id="messagedialog-vbox1">
+      <object class="GtkBox" id="messagedialog-vbox">
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child internal-child="action_area">
-          <object class="GtkButtonBox" id="messagedialog-action_area1">
+          <object class="GtkButtonBox" id="messagedialog-action_area">
             <property name="can_focus">False</property>
             <property name="layout_style">end</property>
-            <child>
-              <placeholder/>
-            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -248,7 +255,7 @@ Keeping your privacy safe is the intent of the author.</property>
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <signal name="activate" handler="on_menu_info_activate" object="infodialog" swapped="no"/>
+                        <signal name="activate" handler="on_menu_activate" object="infodialog" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -259,7 +266,7 @@ Keeping your privacy safe is the intent of the author.</property>
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                        <signal name="activate" handler="on_menu_about_activate" object="aboutdialog1" swapped="no"/>
+                        <signal name="activate" handler="on_menu_activate" object="aboutdialog" swapped="no"/>
                       </object>
                     </child>
                   </object>

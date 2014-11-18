@@ -30,28 +30,34 @@ class GUI(Gtk.Builder):
         self.log.addHandler(ch)
 
     def __call__(self):
+        self.__init_dialogs()
         self.get_object("window").show()
         Gtk.main()
 
-    def on_window_delete_event(self, *args):
-        Gtk.main_quit(*args)
-        
-    def on_menu_about_activate(self, dialog):
-        '''Show About form'''
+    def __init_dialogs(self):
+        dialog = self.get_object("aboutdialog")
         try:
             with open('doc/LICENSE') as lfile:
                 dialog.set_license(lfile.read().replace('\x0c', ''))
         except IOError:
-            dialog.set_license("License file is missing")
-            
+            dialog.set_license("License file is missing")        
+
+        dialog = self.get_object("infodialog")
+        python = '.'.join(map(str, sys.version_info[:3]))
+        gtk = '{}.{}.{}'.format(Gtk.get_major_version(),
+                                Gtk.get_minor_version(),
+                                Gtk.get_micro_version())
+        
+        text = "You are using <b>Python v{}</b> and <b>GTK v{}</b>".format(python, gtk)
+        dialog.set_markup(text)
+
+    def on_window_delete_event(self, *args):
+        Gtk.main_quit(*args)
+        
+    def on_menu_activate(self, dialog):
+        '''Show menu form'''            
         dialog.run()
         dialog.hide()
-
-    def on_menu_info_activate(self, dialog):
-        '''Show Info form'''
-        dialog.set_markup("Python v" + ".".join (map (str, sys.version_info[:3])))
-        dialog.format_secondary_markup("GTK v{}.{}.{}".format (Gtk.get_major_version(), Gtk.get_minor_version(), Gtk.get_micro_version()))
-        dialog.run()
-        dialog.hide()        
+      
 
         

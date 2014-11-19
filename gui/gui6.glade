@@ -17,6 +17,7 @@ Keeping your privacy safe is the intent of the author.</property>
     <property name="license" translatable="yes">
 </property>
     <property name="authors">Antonio De Rosa</property>
+    <property name="artists">&lt;a href="http://www.thenounproject.com/Milky"&gt;Milky - Digital innovation&lt;/a&gt; from the &lt;a href="http://www.thenounproject.com"&gt;Noun Project&lt;/a&gt;</property>
     <property name="logo">icon.png</property>
     <property name="license_type">gpl-2-0</property>
     <child internal-child="vbox">

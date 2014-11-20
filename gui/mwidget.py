@@ -54,7 +54,7 @@ class PanedWidget(Gtk.Paned):
             if widget.get_active():
                 self.wrapper.stop(callback)
             else:
-                self.wrapper.start(callback)                                               
+                self.wrapper.start(callback)                                    
 
         def check_callback_button(is_already):            
             self.control.set_sensitive(is_already)

@@ -15,7 +15,7 @@ class Wrapper(Batch):
         self.log = log.getChild(self.name)
         self.config = config
         self.info = info
-        self.warning = info
+        self.warning = warning
         self.pid = None
         
         super(Wrapper, self).__init__(self.log)        
@@ -36,8 +36,6 @@ class Wrapper(Batch):
     def verify(self, enabling_widget):
         '''(1) Should be root?'''
         if self.config.getboolean('config', 'root') and os.geteuid() != 0:            
-            '''self.output('Module "{}" must run as root\n'.format(self.name))'''
-            ''' SHOW A WARNING'''
             enabling_widget(False)
             return
 

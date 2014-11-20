@@ -4,6 +4,7 @@ from __future__ import print_function
 import ConfigParser
 import tempfile
 import random
+import string
 import sys
 import os
 
@@ -23,12 +24,16 @@ def lookup(fname, cnt = 0):
 
 def randomize(fname):
     '''From the given dictionary file return a random hostname'''
+    def sanitize(name):
+        return ''.join(filter(lambda char: char in string.ascii_letters, name))
+        
     if not os.path.isfile(fname):
         raise Exception("Randomize dictionary file {} not found".format(fname))
         
     with open(fname) as f:
         f.seek(random.randint(0, os.stat(fname).st_size))
-        return randomize(fname) if f.readline() == "" else f.readline()
+        rname = sanitize(f.readline())
+        return randomize(fname) if rname == "" else rname
 
 def setup(module):    
     config = ConfigParser.SafeConfigParser()

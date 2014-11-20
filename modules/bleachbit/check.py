@@ -8,12 +8,10 @@ import shlex
 import sys
 import os
 
-patterns = ['Files to be deleted:', 'File da eliminare:']
-
-def check(proc):
+def check(proc, pattern):
     (output, error) = proc.communicate()
     for line in reversed(output.splitlines()):
-        if filter(lambda pattern: pattern in line, patterns) != []:
+        if pattern in line:
             break
         
     try: 
@@ -35,12 +33,13 @@ try:
     config = ConfigParser.SafeConfigParser(allow_no_value = True)    
     config.read('bleachbit.cfg')
     bleachbit = config.get('DEFAULT', 'bleachbit')
-    cleaners = config.get('DEFAULT', 'cleaners')    
+    cleaners = config.get('DEFAULT', 'cleaners')
+    pattern = config.get('config', 'pattern_check')
     cmd = "{} -p -c {}".format(bleachbit, cleaners)
     proc = subprocess.Popen(shlex.split(cmd),
                             stdout=subprocess.PIPE,
                             stderr=subprocess.PIPE)
-    check(proc)
+    check(proc, pattern)
     
 except KeyboardInterrupt:
     print("SIGINT received (timeout or CTRL+C)", file=sys.stderr)

@@ -9,7 +9,7 @@ import sys
 import os
 import re
 
-def run(bleachbit, cleaner):
+def run(bleachbit, cleaner, pattern):
     cmd = "{} -c {}".format(bleachbit, cleaner)
     proc = subprocess.Popen(shlex.split(cmd),
                             stdout=subprocess.PIPE,
@@ -19,7 +19,7 @@ def run(bleachbit, cleaner):
     (stdout, stderr) = proc.communicate()
 
     for line in reversed(stdout.splitlines()):
-        if 'Files deleted' in line:
+        if pattern in line:
             print('* ' + line)
             break
     
@@ -32,7 +32,8 @@ try:
     config.read('bleachbit.cfg')
     bleachbit = config.get('DEFAULT', 'bleachbit')
     cleaners = config.get('DEFAULT', 'cleaners').split()
-    wrun = lambda cleaner: run(bleachbit, cleaner)
+    pattern = config.get('config', 'pattern_op')
+    wrun = lambda cleaner: run(bleachbit, cleaner, pattern)
     map(wrun, cleaners)
 
 except KeyboardInterrupt:

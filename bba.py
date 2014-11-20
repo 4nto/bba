@@ -146,5 +146,5 @@ class BBA(GUI):
                                     self.tv.get_buffer().get_end_iter())
     
 if __name__ == '__main__':
-    instance = BBA('modules/bba.cfg')
+    instance = BBA('modules/bba.ini')
     instance()        

@@ -6,9 +6,9 @@ Every is only avilable by command line, as example by running
 ```
 ./module/bleachbit/check.py
 ```
-I can see how many files the script start.py will remove from my system (related to the options in bleachbit.cfg file).
+I can see how many files the module bleachbit will remove from my system.
 
-The GUI use the modules through ini-like configuration files that have a well-defined key-words, following you will find them.
+The GUI use the modules through ini-like configuration files with well-defined key-words, every module is composed by different scripts which run in separate processes.
 
 In the current BBA version the default modules are
 
@@ -23,7 +23,7 @@ In the current BBA version the default modules are
 * Into your new directory create the configuration file and name it **MyModule.cfg**
 
 ##Configuration File
-Following an example of configuration file, [here](https://wiki.python.org/moin/ConfigParserExamples) you will find some examples. <br/>
+Following an example of module configuration file, [here](https://wiki.python.org/moin/ConfigParserExamples) you will find some generic examples. <br/>
 It have to contain at least the sections **[config]** and  **[cmd]**  with the options
 
 * **[config] title**: the description showed in the gui left to gtk command

@@ -12,12 +12,12 @@ if 'UBUNTU_MENUPROXY' in os.environ:
 
 from gi.repository import Gtk, GObject
 
-import gui 
-import gui.mwidget
+from gui import GUI
+from gui.mwidget import PanedWidget
 import util.setup
-import util.wrapper
+from util.wrapper import Wrapper
 
-class BBA(gui.GUI):
+class BBA(GUI):
     '''Main Class'''
     def __init__(self, config_fname):
         '''BBA Class Constructor'''
@@ -30,8 +30,10 @@ class BBA(gui.GUI):
         self.config_fname = config_fname
         self.tv = self.get_object("textview1")
         self.progressbar_step = 0
-        self.w_tv = lambda text: self.tv.get_buffer().insert\
-                   (self.tv.get_buffer().get_end_iter(), text)
+        
+        self.tv.get_buffer().create_tag("warning", foreground = 'red')
+        self.tv.get_buffer().create_tag("check", weight = 700)
+        self.tv.get_buffer().create_tag("toggle_module", foreground = 'blue', weight = 700)
         
         box1 = self.get_object("box1")
         box2 = self.get_object("box2")
@@ -67,13 +69,14 @@ class BBA(gui.GUI):
             '''
             def load_widget_module(name, conf):
                 '''Create the internal logic of a module/widget'''
-                wrapper = util.wrapper.Wrapper(log = self.log,
-                                               output = self.w_tv,
-                                               config = conf,
-                                               name = name)
+                wrapper = Wrapper(log = self.log,
+                                  config = conf,
+                                  name = name,
+                                  output = self.write,
+                                  info = lambda t: self.write(t, 'check'),
+                                  warning = lambda t: self.write(t, 'warning'))
                 
-                paned = gui.mwidget.PanedWidget(wrapper,
-                                                conf.has_option('config', 'button'))
+                paned = PanedWidget(wrapper, conf.has_option('config', 'button'))
                 
                 box = box2 if conf.getboolean('config', 'hide') else box1
                 
@@ -87,9 +90,10 @@ class BBA(gui.GUI):
             def toggle_menu_module(item):
                 '''Insert a module into the menu bar'''
                 config.set('modules', item.get_label(), str(item.get_active()))
-                self.w_tv("At the next start module {} will be {}\n"\
+                self.write("At the next start module {} will be {}\n"\
                           .format(item.get_label(), "enabled" \
-                          if item.get_active() else "disabled"))
+                          if item.get_active() else "disabled"),
+                          tag = 'toggle_module')
                 
                 with open(config_fname, 'wb') as fd:
                     config.write(fd)
@@ -106,6 +110,16 @@ class BBA(gui.GUI):
             moduleItem.show()            
         
         map(load_module, modules)        
+
+    def write(self, text, tag = None):
+        textbuffer = self.tv.get_buffer()
+        start = textbuffer.get_end_iter()
+        
+        if tag:
+            textbuffer.insert_with_tags_by_name(start, text, tag)
+        else:
+            textbuffer.insert(start, text)
+                
     
     def on_textview_sizeallocate_event(self, textview, *args):
         '''Provide autoscrolling for the textview'''

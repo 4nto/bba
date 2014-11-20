@@ -1,13 +1,21 @@
 import os
 from util.batch import Batch
 
-class Wrapper(Batch):        
-    def __init__(self, log, output, config, name):
+class Wrapper(Batch):
+    '''
+    This class commands a single modules
+        * name:     the name of the module
+        * output:   the function which writes on the textview normal data
+        * check:    the function which writes on the textview check data
+        * warning:  the function which writes on the textview warning data        
+    '''
+    def __init__(self, log, config, name, output, info, warning):
         '''Wrapper class constructor'''
         self.name = name
         self.log = log.getChild(self.name)
         self.config = config
-        self.output = output
+        self.info = info
+        self.warning = info
         self.pid = None
         
         super(Wrapper, self).__init__(self.log)        
@@ -44,7 +52,7 @@ class Wrapper(Batch):
             if exit_code == 0:
                 enabling_widget(True)                        
             else:
-                self.output('Module "{}" disabled: {}\n'.format(self.name,
+                self.warning('Module "{}" disabled: {}\n'.format(self.name,
                                                                 stdout.strip()))
                 enabling_widget(False)
 
@@ -63,7 +71,7 @@ class Wrapper(Batch):
     '''        
     def check (self, callback):
         def parser (exit_code, stdout):
-            self.output(stdout)
+            self.info(stdout)
             callback(True if exit_code == 0 else False)
             
         self.set_cmd(self.check_cmd)

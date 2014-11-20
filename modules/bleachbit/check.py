@@ -27,7 +27,8 @@ def check(proc):
         print("Your system is clean")        
         sys.exit(1)
 
-    print("There are {} files to remove".format(file_to_delete))
+    verb, name = ('is', 'file') if file_to_delete == 1 else ('are', 'files')
+    print("There {} {} {} to remove".format(verb, file_to_delete, name))
 
 try:
     os.chdir(os.path.dirname(__file__))
@@ -36,7 +37,9 @@ try:
     bleachbit = config.get('DEFAULT', 'bleachbit')
     cleaners = config.get('DEFAULT', 'cleaners')    
     cmd = "{} -p -c {}".format(bleachbit, cleaners)
-    proc = subprocess.Popen(shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    proc = subprocess.Popen(shlex.split(cmd),
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE)
     check(proc)
     
 except KeyboardInterrupt:

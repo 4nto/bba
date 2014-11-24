@@ -3,7 +3,6 @@
 __author__ = 'Antonio De Rosa'
 
 import os
-import sys
 import ConfigParser
 
 # to avoid unity MENUPROXY hide the menubar
@@ -33,7 +32,9 @@ class BBA(GUI):
         
         self.tv.get_buffer().create_tag("warning", foreground = 'red')
         self.tv.get_buffer().create_tag("check", weight = 700)
-        self.tv.get_buffer().create_tag("toggle_module", foreground = 'blue', weight = 700)
+        self.tv.get_buffer().create_tag("toggle_module",
+                                        foreground = 'blue',
+                                        weight = 700)
         
         box1 = self.get_object("box1")
         box2 = self.get_object("box2")
@@ -59,8 +60,7 @@ class BBA(GUI):
             getattr(self.get_object("info"), 'show' if enable else 'hide')()            
             box1.set_sensitive(not enable)
             box2.set_sensitive(not enable)
-            self.get_object('button_stop').connect('clicked', halt)
-            
+            self.get_object('button_stop').connect('clicked', halt)            
 
         def load_module(module):
             '''
@@ -112,6 +112,7 @@ class BBA(GUI):
         map(load_module, modules)        
 
     def write(self, text, tag = None):
+        '''Write in the textview with or without the tag'''
         textbuffer = self.tv.get_buffer()
         start = textbuffer.get_end_iter()
         
@@ -119,8 +120,7 @@ class BBA(GUI):
             textbuffer.insert_with_tags_by_name(start, text, tag)
         else:
             textbuffer.insert(start, text)
-                
-    
+                    
     def on_textview_sizeallocate_event(self, textview, *args):
         '''Provide autoscrolling for the textview'''
         adj = textview.get_vadjustment()

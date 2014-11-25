@@ -5,7 +5,7 @@ Simply anonymize your network and web activities through Tor and other open-sour
 
 BBA works on Linux, it is tested with [BackBox Linux](https://www.backbox.org) and Ubuntu 14.04 <br />
 
-BBA is made by modules, each one provides an indipendent function and you can easily create your own by following [related doc](doc/Modules.md)<br />
+BBA is made by modules, each one provides an indipendent function and you can easily create your own by following [related doc](doc/Modules.md/making-a-new-module)<br />
 
 It is developed in Python with GTK+3
 

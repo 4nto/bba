@@ -4,25 +4,31 @@ A module is an indipendent python script which performs a simple operation which
 
 Every is only avilable by command line, as example by running
 ```
-./module/bleachbit/check.py
+./module/tor/check.py
 ```
-I can see how many files the module bleachbit will remove from my system.
+I can see if I'm currently surfing through Tor
 
-The GUI use the modules through ini-like configuration files with well-defined key-words, every module is composed by different scripts which run in separate processes.
+##Default modules
 
-In the current BBA version the default modules are
+In the current BBA version there are 4 default modules
 
-1.  **bleachbit** to clean the system by using bleachbit 
-2.  **hostname** to randomize and restore the system hostname
-3.  **network** to randomize and restore the MAC address for each physical network interface (but not in virtual machine)
-4.  **tor** to transparently route traffic through Tor
+####Bleachbit
+Clean the system by using [bleachbit](http://bleachbit.sourceforge.net). In the [configuration file](modules/bleachbit/bleachbit.cfg) it's possible to change the used cleaners list
+####Hostname
+Randomize the system hostname by using [anonymous script](https://github.com/raffaele-forte/backbox-anonymous), it changes some X critical files so it's better to avoid stopping it while running
+####Network
+Randomize the MAC address for each physical network interface but not in virtual machine. It needs anonymous script, [GNU Macchanger](http://www.gnu.org/software/macchanger) to change your physical address and optionally [virt-what](http://people.redhat.com/~rjones/virt-what) to detect the virtualized environment
+####Tor 
+Transparently route traffic through [Tor](https://www.torproject.org) by using anonymous script.
 
 ##Making a new module
+The GUI use the modules through ini-like configuration files with well-defined key-words, every module is composed by different scripts which run in separate processes.
+
 * Create a new directory and name it as your module, e.g. **MyModule**
 * Put the directory **MyModule** into *modules/*
 * Into your new directory create the configuration file and name it **MyModule.cfg**
 
-##Configuration File
+###Configuration File
 Following an example of module configuration file, [here](https://wiki.python.org/moin/ConfigParserExamples) you will find some generic examples. <br/>
 It have to contain at least the sections **[config]** and  **[cmd]**  with the options
 

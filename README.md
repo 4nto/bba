@@ -22,7 +22,7 @@ If you launch it as unprivileged user you can only see the system information
 
 Dependecies
 --------------
-BBA needs Python 2.7 and Gtk+3 (tested with 3.4 and 3.10 versions) already present in recent Linux distributions. If you click on Help > Information you will discover the version used in your system <br />
+BBA needs Python 2.7 and Gtk+3 already present in recent Linux distributions. If you click on Help > Information you will discover the version used in your system <br />
 
 The [default modules](doc/Modules.md) need the following tools
 

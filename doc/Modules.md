@@ -2,7 +2,7 @@
 
 A module is an indipendent python script which performs a simple operation which could be represent by a Switch or a Button. A switch is a module with start/stop/check operations while a button represents a module with only start/check operations.<br/>
 
-Every is only avilable by command line, as example by running
+Each module is also avilable by command line, as example by running
 ```
 ./module/tor/check.py
 ```

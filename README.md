@@ -1,14 +1,16 @@
 BackBox Anonymizer
 ==============
 
-A simple GUI to anonymize your web activities by mixing Tor, Bleachbit and GNU Macchanger. <br />
+Simply anonymize your network and web activities through Tor and other open-source tools <br />
 
-It is designed to be modular, you can create your own plug-in by following [documentation](doc/Modules.md). <br />
+BBA is made by modules, each one provides an indipendent function and you can easily create your own by following [related doc](doc/Modules.md) <br />
 
-BBA works on Linux and is developed in Python with GTK+3, proudly based on [backbox-anonymous](https://github.com/raffaele-forte/backbox-anonymous) script
+BBA works on Linux, it is designed for [BackBox Linux](www.backbox.org) and Ubuntu (14.04) but it works also on other Debian-based distro
+
+It is developed in Python with GTK+3
 
 ![Linux](http://img.shields.io/badge/OS-Linux-blue.svg)&nbsp; 
-![GTK](http://img.shields.io/badge/GUI-GTK-yellow.svg)&nbsp; 
+![GTK](http://img.shields.io/badge/GUI-GTK+3-yellow.svg)&nbsp; 
 ![Python](http://img.shields.io/badge/Language-Python-green.svg)&nbsp; 
 ![License](http://img.shields.io/badge/License-GNU_GPL_2.0-red.svg)&nbsp; 
 ![version 1.0](http://img.shields.io/badge/Version-1.0-lightgrey.svg)&nbsp; 

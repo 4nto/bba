@@ -9,9 +9,6 @@ Each module is also avilable by command line, as example by running
 I can see if I'm currently surfing through Tor
 
 ##Default modules
-
-In the current BBA version there are 4 default modules
-
 ####Bleachbit
 Clean the system by using [bleachbit](http://bleachbit.sourceforge.net). In the [configuration file](modules/bleachbit/bleachbit.cfg) it's possible to change the used cleaners list
 ####Hostname

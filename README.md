@@ -24,7 +24,7 @@ Dependecies
 --------------
 BBA needs Python 2.7 and Gtk+3 already present in recent Linux distributions. If you click on Help > Information you will discover the version used in your system <br />
 
-The [default modules](doc/Modules.md) need the following tools
+The [default modules](doc/Modules.md#default-modules) need the following tools
 
 ```sh
 sudo apt-get install tor bleachbit macchanger virt-what 

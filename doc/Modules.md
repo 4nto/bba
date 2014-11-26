@@ -10,7 +10,7 @@ I can see if I'm currently surfing through Tor
 
 ##Default modules
 ####Bleachbit
-Clean the system by using [bleachbit](http://bleachbit.sourceforge.net). In the [configuration file](modules/bleachbit/bleachbit.cfg) it's possible to change the used cleaners list
+Clean the system by using [bleachbit](http://bleachbit.sourceforge.net). In the [configuration file](../modules/bleachbit/bleachbit.cfg) it's possible to change the used cleaners list
 ####Hostname
 Randomize the system hostname by using [anonymous script](https://github.com/raffaele-forte/backbox-anonymous), it changes some X critical files so it's better to avoid stopping it while running
 ####Network

@@ -8,10 +8,8 @@
     <property name="type_hint">dialog</property>
     <property name="program_name">BackBox Anonymizer</property>
     <property name="version">Version 1.0</property>
-    <property name="comments" translatable="yes">This program tries to anonymize your web activities
-by mixing open-source software.
-
-Keeping your privacy safe is the intent of the author.</property>
+    <property name="comments" translatable="yes">Simply anonymize your network and web activities 
+through Tor and other open-source tools</property>
     <property name="website">https://github.com/4nto/bba</property>
     <property name="website_label" translatable="yes">BBA on github</property>
     <property name="license" translatable="yes">

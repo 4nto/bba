@@ -9,21 +9,20 @@ import os
 def setup(module):
     config = ConfigParser.SafeConfigParser()
 
+    '''If there is bleachbit configuration file check the language'''
     bleachbit_cfg = os.path.expanduser("~") + '/.config/bleachbit/bleachbit.ini'
-    if not os.path.isfile(bleachbit_cfg):
-        '''There is no bleachbit configuration file'''
-        return
+    if os.path.isfile(bleachbit_cfg):
+        bleachbitConf = ConfigParser.SafeConfigParser()
+        bleachbitConf.read(bleachbit_cfg)
+        if bleachbitConf.has_section('preserve_languages') \
+           and bleachbitConf.has_option('preserve_languages', 'en') \
+           and bleachbitConf.getboolean('preserve_languages', 'en'):
 
-    config.read(bleachbit_cfg)
-    if config.has_section('preserve_languages') \
-       and config.has_option('preserve_languages', 'en') \
-       and config.getboolean('preserve_languages', 'en'):
-
-        op = 'Files deleted'
-        check = 'Files to be deleted'
-        
-    else:        
-        raise Exception('Unable to check Bleachbit used language')
+            op = 'Files deleted'
+            check = 'Files to be deleted'
+            
+        else:        
+            raise Exception('Unable to check Bleachbit used language')
     
     config.read('{}.cfg'.format(module))
     config.set('config', 'pattern_op', op)

@@ -155,6 +155,7 @@ The GUI uses GTK+3 and is tested it with versions 3.4 and 3.10, if it's not work
     <property name="vexpand">True</property>
     <property name="title" translatable="yes">BB Anonymizer</property>
     <property name="resizable">False</property>
+    <property name="window_position">center</property>
     <property name="icon">icon.png</property>
     <property name="gravity">north</property>
     <signal name="delete-event" handler="on_window_delete_event" swapped="no"/>

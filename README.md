@@ -20,7 +20,7 @@ Download and extract [ZIP file](https://github.com/4nto/bba/archive/master.zip) 
 
 If you launch it as unprivileged user you can only see the system information 
 
-If you want use the desktop entry set the absoulute path in Exec and Icon entries in it
+If you want use the desktop entry edit in bba-root.desktop the Exec and Icon entries with absoulute path
 
 Dependecies
 --------------

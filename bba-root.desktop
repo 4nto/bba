@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=BBA (as root)
+Comment=Simply anonymize your network and web activities 
+GenericName=BackBox Anonymizer
+Terminal=false
+TryExec=su-to-root
+Exec=su-to-root -X -c ./bba.py
+Icon=icon.png
+Categories=GTK;System;
+StartupNotify=true

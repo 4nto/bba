@@ -20,6 +20,8 @@ Download and extract [ZIP file](https://github.com/4nto/bba/archive/master.zip) 
 
 If you launch it as unprivileged user you can only see the system information 
 
+If you want use the desktop entry set the absoulute path in Exec and Icon entries in it
+
 Dependecies
 --------------
 BBA needs Python 2.7 and Gtk+3 already present in recent Linux distributions. If you click on Help > Information you will discover the version used in your system <br />
